@@ -1,0 +1,25 @@
+{
+  "name": "react-native-strip-calendar",
+  "version": "0.0.1",
+  "description": "react native strip calendar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "swarvy",
+  "license": "MIT",
+  "packageManager": "pnpm@10.10.0",
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-native": "^0.73.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-native": "^0.78.0"
+  },
+  "dependencies": {
+    "@legendapp/list": "^2.0.9",
+    "date-fns": "^4.1.0"
+  }
+}
