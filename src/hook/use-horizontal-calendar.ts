@@ -78,7 +78,6 @@ export function useHorizontalCalendar({
     [onDateChange],
   );
 
-  // 수정된 범위 체크 함수들
   const canGoNext = useMemo(() => {
     if (!startDate || !endDate) {
       return true;
@@ -87,7 +86,6 @@ export function useHorizontalCalendar({
     const nextWeek = addWeeks(centerDate, 1);
     const nextWeekStart = startOfWeek(nextWeek, { weekStartsOn: firstDay });
 
-    // 다음 주의 시작일이 endDate를 넘지 않아야 함
     return !isAfter(nextWeekStart, endDate);
   }, [centerDate, startDate, endDate, firstDay]);
 
@@ -99,8 +97,6 @@ export function useHorizontalCalendar({
     const prevWeek = subWeeks(centerDate, 1);
     const prevWeekEnd = endOfWeek(prevWeek, { weekStartsOn: firstDay });
 
-    // 이전 주의 종료일이 startDate보다 이전이 아니어야 함
-    // 즉, 이전 주가 startDate와 겹치는 부분이 있어야 함
     return !isBefore(prevWeekEnd, startDate);
   }, [centerDate, startDate, endDate, firstDay]);
 

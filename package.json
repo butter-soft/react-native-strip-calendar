@@ -2,12 +2,31 @@
   "name": "react-native-strip-calendar",
   "version": "0.0.1",
   "description": "react native strip calendar",
-  "main": "src/index.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "scripts": {
+    "build": "tsdown",
     "example:prebuild": "cd example && pnpm prebuild && cd ..",
     "example:android": "cd example && pnpm android && cd ..",
     "example:ios": "cd example && pnpm ios && cd .."
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "swarvy",
   "license": "MIT",
@@ -15,7 +34,9 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/react": "^19.0.0",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "tsdown": "^0.15.6",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": "^19.0.0",
