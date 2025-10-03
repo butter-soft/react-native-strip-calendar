@@ -5,6 +5,8 @@ import {
   addWeeks,
   endOfWeek,
   format,
+  isAfter,
+  isBefore,
   isSameDay,
   startOfWeek,
 } from 'date-fns';
@@ -19,6 +21,7 @@ export interface CalendarDate {
   isToday: boolean;
   isSelected: boolean;
   isCurrentMonth: boolean;
+  isDisabled: boolean;
   weekNumber: number;
 }
 
@@ -54,6 +57,8 @@ export function generateDayNames({
 export function generateWeekDates(
   baseDate: Date = new Date(),
   firstDay: Day = 1,
+  minDate?: Date,
+  maxDate?: Date,
 ): CalendarDate[] {
   const start = startOfWeek(baseDate, { weekStartsOn: firstDay });
   const dates: CalendarDate[] = [];
@@ -74,6 +79,10 @@ export function generateWeekDates(
       isToday: isSameDay(date, today),
       isSelected: false,
       isCurrentMonth: date.getMonth() === currentMonth,
+      isDisabled:
+        (minDate && isBefore(date, minDate)) ||
+        (maxDate && isAfter(date, maxDate)) ||
+        false,
       weekNumber,
     });
   }
@@ -85,6 +94,8 @@ export function generateWeeksInRange(
   startDate: Date,
   endDate: Date,
   firstDay: Day = 1,
+  minDate?: Date,
+  maxDate?: Date,
 ): WeekData[] {
   const weeks: WeekData[] = [];
 
@@ -100,7 +111,7 @@ export function generateWeeksInRange(
       weekNumber: getWeekNumber(currentWeekStart),
       startDate: format(currentWeekStart, 'yyyy-MM-dd'),
       endDate: format(weekEnd, 'yyyy-MM-dd'),
-      dates: generateWeekDates(currentWeekStart, firstDay),
+      dates: generateWeekDates(currentWeekStart, firstDay, minDate, maxDate),
     });
 
     currentWeekStart = addWeeks(currentWeekStart, 1);

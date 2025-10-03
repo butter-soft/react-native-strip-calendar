@@ -18,6 +18,8 @@ export interface UseHorizontalCalendarOptions {
   firstDay?: Day;
   startDate?: Date;
   endDate?: Date;
+  minDate?: Date;
+  maxDate?: Date;
   onDateChange?: (date: string) => void;
 }
 
@@ -26,6 +28,8 @@ export function useHorizontalCalendar({
   firstDay = 1,
   startDate,
   endDate,
+  minDate,
+  maxDate,
   onDateChange,
 }: UseHorizontalCalendarOptions = {}) {
   const [centerDate, setCenterDate] = useState(initialDate);
@@ -46,7 +50,13 @@ export function useHorizontalCalendar({
   }, [startDate, endDate]);
 
   const weeksData = useMemo(() => {
-    return generateWeeksInRange(dateRange.start, dateRange.end, firstDay);
+    return generateWeeksInRange(
+      dateRange.start,
+      dateRange.end,
+      firstDay,
+      minDate,
+      maxDate,
+    );
   }, [dateRange, firstDay]);
 
   const initialScrollIndex = useMemo(() => {
@@ -114,6 +124,7 @@ export function useHorizontalCalendar({
 
   const goToToday = useCallback(() => {
     const today = new Date();
+
     setCenterDate(today);
     setSelectedDate(format(today, 'yyyy-MM-dd'));
   }, []);
