@@ -93,7 +93,6 @@ export function StripCalendar({
   const {
     weeksData,
     selectedDate,
-    centerDate,
     handleDateSelect,
     goToPreviousWeek,
     goToNextWeek,
@@ -111,29 +110,7 @@ export function StripCalendar({
     onDateChange,
   });
 
-  const listRef = useRef<LegendListRef>(null);
-  const [hasInitialized, setHasInitialized] = useState(false);
-
   const currentSelectedDate = externalSelectedDate || selectedDate;
-
-  const handleInitialLayout = useCallback(() => {
-    if (listRef.current && initialScrollIndex >= 0) {
-      listRef.current?.scrollToIndex?.({
-        index: initialScrollIndex,
-        animated: false,
-      });
-      setHasInitialized(true);
-    }
-  }, [initialScrollIndex]);
-
-  useEffect(() => {
-    if (listRef.current && currentScrollIndex >= 0 && hasInitialized) {
-      listRef.current?.scrollToIndex?.({
-        index: currentScrollIndex,
-        animated: true,
-      });
-    }
-  }, [currentScrollIndex, hasInitialized]);
 
   const contextValue = {
     weeksData,
@@ -146,10 +123,10 @@ export function StripCalendar({
     canGoPrevious,
     goToNextWeek,
     goToPreviousWeek,
-    handleInitialLayout,
     renderDay,
     dayProps,
-    centerDate,
+    initialScrollIndex,
+    currentScrollIndex,
   };
 
   return (
@@ -197,10 +174,15 @@ StripCalendar.Week = function ({
   style?: StyleProp<ViewStyle>;
   dayProps?: Omit<DayProps, 'date'>;
 }) {
+  const listRef = useRef<LegendListRef>(null);
+
+  const [hasInitialized, setHasInitialized] = useState(false);
+
   const {
     weeksData,
     itemWidth,
-    handleInitialLayout,
+    initialScrollIndex,
+    currentScrollIndex,
     renderDay,
     dayProps: contextDayProps,
     selectedDate,
@@ -211,8 +193,28 @@ StripCalendar.Week = function ({
 
   const finalDayProps = weekDayProps || contextDayProps;
 
+  const handleInitialLayout = useCallback(() => {
+    if (listRef.current && initialScrollIndex >= 0 && !hasInitialized) {
+      listRef.current?.scrollToIndex?.({
+        index: initialScrollIndex,
+        animated: false,
+      });
+      setHasInitialized(true);
+    }
+  }, [initialScrollIndex, hasInitialized]);
+
+  useEffect(() => {
+    if (listRef.current && currentScrollIndex >= 0 && hasInitialized) {
+      listRef.current?.scrollToIndex?.({
+        index: currentScrollIndex,
+        animated: true,
+      });
+    }
+  }, [currentScrollIndex, hasInitialized]);
+
   return (
     <LegendList
+      ref={listRef}
       data={weeksData}
       keyExtractor={(item) => item.id}
       renderItem={({ item }: { item: WeekData }) => (

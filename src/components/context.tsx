@@ -10,11 +10,12 @@ export interface StripCalendarContextValue {
   itemWidth: number;
   locale: Locale;
   markedDates?: string[];
+  initialScrollIndex: number;
+  currentScrollIndex: number;
   canGoNext: boolean;
   canGoPrevious: boolean;
   goToNextWeek: () => void;
   goToPreviousWeek: () => void;
-  handleInitialLayout: () => void;
   renderDay?: (props: {
     date: CalendarDate;
     isSelected: boolean;
@@ -25,7 +26,6 @@ export interface StripCalendarContextValue {
     onPress: () => void;
   }) => ReactNode;
   dayProps?: Omit<DayProps, 'date'>;
-  centerDate: Date; // 추가
 }
 
 const StripCalendarContext = createContext<StripCalendarContextValue | null>(
