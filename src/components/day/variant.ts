@@ -1,5 +1,5 @@
 import { cn } from '../../lib/cn';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 export type DayElementClassNames = {
   container?: string;
@@ -11,9 +11,9 @@ export type DayElementClassNames = {
 
 export type DayElementStyles = {
   container?: StyleProp<ViewStyle>;
-  dayName?: StyleProp<ViewStyle>;
+  dayName?: StyleProp<TextStyle>;
   dayNumberContainer?: StyleProp<ViewStyle>;
-  dayNumber?: StyleProp<ViewStyle>;
+  dayNumber?: StyleProp<TextStyle>;
   indicator?: StyleProp<ViewStyle>;
 };
 
