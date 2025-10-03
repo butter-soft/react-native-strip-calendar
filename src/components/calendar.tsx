@@ -1,5 +1,4 @@
 import { useHorizontalCalendar } from '../hook/use-horizontal-calendar';
-import { cn } from '../lib/cn';
 import type { CalendarDate, WeekData } from '../lib/generate-dates';
 import { StripCalendarContext, useStripCalendarContext } from './context';
 import { Day, type DayProps } from './day';
@@ -118,7 +117,7 @@ export function StripCalendar({
   return (
     <StripCalendarContext.Provider value={contextValue}>
       <View
-        className={cn('', classNames.container)}
+        className={classNames.container}
         style={[
           defaultStyles.container,
           { height: containerHeight },
@@ -151,14 +150,26 @@ StripCalendar.Header = function ({
 
 StripCalendar.Week = function ({
   children,
-  className,
-  style,
+  className = {
+    container: '',
+    week: '',
+  },
+  style = {
+    container: {},
+    week: {},
+  },
   dayProps: weekDayProps,
   renderDay: weekRenderDay,
 }: {
   children?: ReactNode;
-  className?: string;
-  style?: StyleProp<ViewStyle>;
+  className?: {
+    container?: string;
+    week?: string;
+  };
+  style?: {
+    container?: StyleProp<ViewStyle>;
+    week?: StyleProp<ViewStyle>;
+  };
   dayProps?: Omit<DayProps, 'date'>;
   renderDay?: (props: {
     date: CalendarDate;
@@ -210,7 +221,7 @@ StripCalendar.Week = function ({
       data={weeksData}
       keyExtractor={(item) => item.id}
       renderItem={({ item }: { item: WeekData }) => (
-        <Week className={className} style={style}>
+        <Week className={className.week} style={style.week}>
           {children ||
             item.dates.map((date) => {
               if (weekRenderDay) {
@@ -244,8 +255,8 @@ StripCalendar.Week = function ({
       estimatedItemSize={itemWidth * 7}
       horizontal
       showsHorizontalScrollIndicator={false}
-      className={className}
-      contentContainerStyle={style}
+      className={className.container}
+      contentContainerStyle={style.container}
       onLayout={handleInitialLayout}
     />
   );
@@ -253,22 +264,6 @@ StripCalendar.Week = function ({
 
 StripCalendar.Day = function (props: DayProps) {
   return <Day {...props} />;
-};
-
-StripCalendar.Navigation = function ({
-  children,
-  className,
-  style,
-}: {
-  children: ReactNode;
-  className?: string;
-  style?: StyleProp<ViewStyle>;
-}) {
-  return (
-    <View className={className} style={[style]}>
-      {children}
-    </View>
-  );
 };
 
 StripCalendar.PreviousButton = function ({
