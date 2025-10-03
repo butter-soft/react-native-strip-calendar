@@ -46,7 +46,7 @@ export function useHorizontalCalendar({
       minDate,
       maxDate,
     );
-  }, [dateRange, firstDay]);
+  }, [dateRange, firstDay, minDate, maxDate]);
 
   const initialScrollIndex = useMemo(() => {
     const targetWeekStart = startOfWeek(initialDate, {
