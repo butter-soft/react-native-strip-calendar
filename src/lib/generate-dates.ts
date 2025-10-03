@@ -8,6 +8,7 @@ import {
   isAfter,
   isBefore,
   isSameDay,
+  startOfDay,
   startOfWeek,
 } from 'date-fns';
 
@@ -80,9 +81,8 @@ export function generateWeekDates(
       isSelected: false,
       isCurrentMonth: date.getMonth() === currentMonth,
       isDisabled:
-        (minDate && isBefore(date, minDate)) ||
-        (maxDate && isAfter(date, maxDate)) ||
-        false,
+        (minDate ? isBefore(startOfDay(date), startOfDay(minDate)) : false) ||
+        (maxDate ? isAfter(startOfDay(date), startOfDay(maxDate)) : false),
       weekNumber,
     });
   }
