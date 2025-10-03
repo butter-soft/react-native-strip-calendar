@@ -49,15 +49,6 @@ export interface StripCalendarProps {
   };
   locale?: Locale;
   children?: ReactNode;
-  renderDay?: (props: {
-    date: CalendarDate;
-    isSelected: boolean;
-    isDisabled: boolean;
-    isMarked: boolean;
-    dayName: string;
-    dayNumber: number;
-    onPress: () => void;
-  }) => ReactNode;
 }
 
 export function StripCalendar({
@@ -86,7 +77,6 @@ export function StripCalendar({
     header: {},
   },
   children,
-  renderDay,
 }: StripCalendarProps) {
   const {
     weeksData,
@@ -121,7 +111,6 @@ export function StripCalendar({
     canGoPrevious,
     goToNextWeek,
     goToPreviousWeek,
-    renderDay,
     initialScrollIndex,
     currentScrollIndex,
   };
@@ -165,11 +154,21 @@ StripCalendar.Week = function ({
   className,
   style,
   dayProps: weekDayProps,
+  renderDay: weekRenderDay,
 }: {
   children?: ReactNode;
   className?: string;
   style?: StyleProp<ViewStyle>;
   dayProps?: Omit<DayProps, 'date'>;
+  renderDay?: (props: {
+    date: CalendarDate;
+    isSelected: boolean;
+    isDisabled: boolean;
+    isMarked: boolean;
+    dayName: string;
+    dayNumber: number;
+    onPress: () => void;
+  }) => ReactNode;
 }) {
   const listRef = useRef<LegendListRef>(null);
 
@@ -180,7 +179,6 @@ StripCalendar.Week = function ({
     itemWidth,
     initialScrollIndex,
     currentScrollIndex,
-    renderDay,
     selectedDate,
     markedDates = [],
     onDateSelect,
@@ -215,7 +213,7 @@ StripCalendar.Week = function ({
         <Week className={className} style={style}>
           {children ||
             item.dates.map((date) => {
-              if (renderDay) {
+              if (weekRenderDay) {
                 const currentDate = parseISO(date.dateString);
                 const selectedDateObj = parseISO(selectedDate);
                 const isSelected = isSameDay(currentDate, selectedDateObj);
@@ -226,7 +224,7 @@ StripCalendar.Week = function ({
 
                 return (
                   <View key={date.id}>
-                    {renderDay({
+                    {weekRenderDay({
                       date,
                       isSelected,
                       isDisabled,
@@ -246,7 +244,7 @@ StripCalendar.Week = function ({
       estimatedItemSize={itemWidth * 7}
       horizontal
       showsHorizontalScrollIndicator={false}
-      className={cn('', className)}
+      className={className}
       contentContainerStyle={style}
       onLayout={handleInitialLayout}
     />
