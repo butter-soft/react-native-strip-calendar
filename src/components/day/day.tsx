@@ -1,4 +1,3 @@
-import { cn } from '../../lib/cn';
 import type { CalendarDate } from '../../lib/generate-dates';
 import { useStripCalendarContext } from '../context';
 import {
@@ -11,7 +10,6 @@ import { format, isSameDay, isToday as isTodayFn, parseISO } from 'date-fns';
 import type { ReactNode } from 'react';
 import {
   Pressable,
-  StyleSheet,
   Text,
   View,
   type StyleProp,
@@ -50,28 +48,28 @@ export function Day({
   },
   styles = {
     base: {
-      container: defaultStyles.base,
+      container: {},
       dayName: {},
       dayNumberContainer: {},
       dayNumber: {},
       indicator: {},
     },
     today: {
-      container: defaultStyles.today,
+      container: {},
       dayName: {},
       dayNumberContainer: {},
       dayNumber: {},
       indicator: {},
     },
     selected: {
-      container: defaultStyles.selected,
+      container: {},
       dayName: {},
       dayNumberContainer: {},
       dayNumber: {},
       indicator: {},
     },
     disabled: {
-      container: defaultStyles.disabled,
+      container: {},
       dayName: {},
       dayNumberContainer: {},
       dayNumber: {},
@@ -178,39 +176,10 @@ export function Day({
         {states.isMarked && (
           <View
             className={elementClassNames.indicator}
-            style={[defaultStyles.indicator, elementStyles.indicator]}
+            style={elementStyles.indicator}
           />
         )}
       </View>
     </Pressable>
   );
 }
-
-const defaultStyles = StyleSheet.create({
-  base: {
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 24,
-  },
-  today: {
-    backgroundColor: '#dbeafe',
-    borderWidth: 2,
-    borderColor: '#3b82f6',
-  },
-  selected: {
-    backgroundColor: '#3b82f6',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  indicator: {
-    width: 8,
-    height: 8,
-    backgroundColor: '#ef4444',
-    borderRadius: 4,
-    position: 'absolute',
-    bottom: 4,
-  },
-});
