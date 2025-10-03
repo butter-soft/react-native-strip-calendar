@@ -12,6 +12,7 @@ A headless, customizable horizontal strip calendar component for React Native wi
 - 🎯 **Customizable Rendering**: Custom day and header rendering functions
 - 📊 **Marked Dates**: Support for highlighting specific dates
 - 🔄 **Navigation Controls**: Previous/Next week navigation with boundary checks
+- 🧩 **Compound Components**: Modular design with Header, Week, Day, and Navigation components
 
 ## Installation
 
@@ -33,6 +34,8 @@ npm install react react-native react-native-web
 
 ## Basic Usage
 
+### Simple Calendar
+
 ```tsx
 import { StripCalendar } from 'react-native-strip-calendar';
 
@@ -43,33 +46,189 @@ export default function MyComponent() {
       endDate={new Date('2025-12-31')}
       initialDate={new Date()}
       onDateChange={(date) => console.log('Selected date:', date)}
-    />
+    >
+      <StripCalendar.Header>
+        {(dateString) => <Text>{dateString}</Text>}
+      </StripCalendar.Header>
+      <StripCalendar.Week />
+      <StripCalendar.Navigation>
+        <StripCalendar.PreviousButton>
+          {({ disabled }) => <Button disabled={disabled}>Previous</Button>}
+        </StripCalendar.PreviousButton>
+        <StripCalendar.NextButton>
+          {({ disabled }) => <Button disabled={disabled}>Next</Button>}
+        </StripCalendar.NextButton>
+      </StripCalendar.Navigation>
+    </StripCalendar>
   );
 }
+```
+
+### With Custom Day Styling
+
+```tsx
+<StripCalendar
+  startDate={new Date('2025-01-01')}
+  endDate={new Date('2025-12-31')}
+  initialDate={new Date()}
+  selectedDate={selectedDate}
+  onDateChange={setSelectedDate}
+  markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
+  dayProps={{
+    styles: {
+      base: {
+        container: {
+          width: 48,
+          height: 48,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 24,
+        },
+        dayName: {
+          fontSize: 10,
+          color: '#6b7280',
+          fontWeight: '500',
+        },
+        dayNumber: {
+          fontSize: 14,
+          color: '#374151',
+          fontWeight: '600',
+        },
+      },
+      today: {
+        container: {
+          backgroundColor: '#dbeafe',
+          borderWidth: 2,
+          borderColor: '#3b82f6',
+        },
+      },
+      selected: {
+        container: {
+          backgroundColor: '#3b82f6',
+        },
+        dayNumber: {
+          color: '#ffffff',
+        },
+      },
+    },
+  }}
+>
+  <StripCalendar.Header>
+    {(dateString) => (
+      <Text style={styles.header}>
+        {format(new Date(dateString), 'MMMM yyyy')}
+      </Text>
+    )}
+  </StripCalendar.Header>
+  <StripCalendar.Week />
+  <StripCalendar.Navigation>
+    <StripCalendar.PreviousButton>
+      {({ disabled }) => (
+        <Pressable
+          style={[styles.button, disabled && styles.disabledButton]}
+          disabled={disabled}
+        >
+          <Text>‹</Text>
+        </Pressable>
+      )}
+    </StripCalendar.PreviousButton>
+    <StripCalendar.NextButton>
+      {({ disabled }) => (
+        <Pressable
+          style={[styles.button, disabled && styles.disabledButton]}
+          disabled={disabled}
+        >
+          <Text>›</Text>
+        </Pressable>
+      )}
+    </StripCalendar.NextButton>
+  </StripCalendar.Navigation>
+</StripCalendar>
 ```
 
 ## Props
 
 ### StripCalendarProps
 
-| Prop              | Type                                   | Default      | Description                                    |
-| ----------------- | -------------------------------------- | ------------ | ---------------------------------------------- |
-| `initialDate`     | `Date`                                 | `new Date()` | Initial date to display                        |
-| `firstDay`        | `Day`                                  | `1`          | First day of the week (0 = Sunday, 1 = Monday) |
-| `startDate`       | `Date`                                 | `undefined`  | Start date of the calendar range               |
-| `endDate`         | `Date`                                 | `undefined`  | End date of the calendar range                 |
-| `selectedDate`    | `string`                               | `undefined`  | Currently selected date (YYYY-MM-DD format)    |
-| `onDateChange`    | `(date: string) => void`               | `undefined`  | Callback when date is selected                 |
-| `containerHeight` | `number`                               | `60`         | Height of the calendar container               |
-| `itemWidth`       | `number`                               | `48`         | Width of each day item                         |
-| `markedDates`     | `string[]`                             | `[]`         | Array of dates to mark (YYYY-MM-DD format)     |
-| `classNames`      | `object`                               | `{}`         | CSS class names for styling (NativeWind)       |
-| `styles`          | `object`                               | `{}`         | StyleSheet styles for styling                  |
-| `locale`          | `Locale`                               | `enUS`       | Locale for date formatting                     |
-| `renderHeader`    | `(dateString: string) => ReactNode`    | `undefined`  | Custom header renderer                         |
-| `renderDay`       | `({ date, markedDates }) => ReactNode` | `undefined`  | Custom day renderer                            |
-| `previousButton`  | `ReactNode`                            | `undefined`  | Custom previous button                         |
-| `nextButton`      | `ReactNode`                            | `undefined`  | Custom next button                             |
+| Prop              | Type                     | Default      | Description                                    |
+| ----------------- | ------------------------ | ------------ | ---------------------------------------------- |
+| `initialDate`     | `Date`                   | `new Date()` | Initial date to display                        |
+| `firstDay`        | `Day`                    | `1`          | First day of the week (0 = Sunday, 1 = Monday) |
+| `startDate`       | `Date`                   | `undefined`  | Start date of the calendar range               |
+| `endDate`         | `Date`                   | `undefined`  | End date of the calendar range                 |
+| `minDate`         | `Date`                   | `undefined`  | Minimum selectable date                        |
+| `maxDate`         | `Date`                   | `undefined`  | Maximum selectable date                        |
+| `selectedDate`    | `string`                 | `undefined`  | Currently selected date (YYYY-MM-DD format)    |
+| `onDateChange`    | `(date: string) => void` | `undefined`  | Callback when date is selected                 |
+| `containerHeight` | `number`                 | `60`         | Height of the calendar container               |
+| `itemWidth`       | `number`                 | `48`         | Width of each day item                         |
+| `markedDates`     | `string[]`               | `[]`         | Array of dates to mark (YYYY-MM-DD format)     |
+| `classNames`      | `object`                 | `{}`         | CSS class names for styling (NativeWind)       |
+| `styles`          | `object`                 | `{}`         | StyleSheet styles for styling                  |
+| `locale`          | `Locale`                 | `enUS`       | Locale for date formatting                     |
+| `renderDay`       | `(props) => ReactNode`   | `undefined`  | Custom day renderer                            |
+| `dayProps`        | `DayProps`               | `undefined`  | Props for the Day component                    |
+
+### DayProps
+
+| Prop           | Type                   | Description                                   |
+| -------------- | ---------------------- | --------------------------------------------- |
+| `date`         | `CalendarDate`         | The date object to render                     |
+| `classNames`   | `DayStateClassNames`   | CSS class names for different day states      |
+| `styles`       | `DayStateStyles`       | StyleSheet styles for different day states    |
+| `formatString` | `object`               | Custom format strings for day name and number |
+| `renderDay`    | `(props) => ReactNode` | Custom day renderer function                  |
+
+## Compound Components
+
+### StripCalendar.Header
+
+Renders the calendar header with the selected date.
+
+```tsx
+<StripCalendar.Header>
+  {(dateString) => (
+    <Text style={styles.header}>
+      {format(new Date(dateString), 'MMMM yyyy')}
+    </Text>
+  )}
+</StripCalendar.Header>
+```
+
+### StripCalendar.Week
+
+Renders the week view with days.
+
+```tsx
+<StripCalendar.Week
+  className="custom-week"
+  style={styles.week}
+  dayProps={customDayProps}
+/>
+```
+
+### StripCalendar.Day
+
+Renders a single day (useful for custom layouts).
+
+```tsx
+<StripCalendar.Day date={dateObject} styles={customDayStyles} />
+```
+
+### StripCalendar.Navigation
+
+Container for navigation buttons.
+
+```tsx
+<StripCalendar.Navigation>
+  <StripCalendar.PreviousButton>
+    {({ disabled }) => <Button disabled={disabled}>Previous</Button>}
+  </StripCalendar.PreviousButton>
+  <StripCalendar.NextButton>
+    {({ disabled }) => <Button disabled={disabled}>Next</Button>}
+  </StripCalendar.NextButton>
+</StripCalendar.Navigation>
+```
 
 ## Styling
 
@@ -83,6 +242,21 @@ import { StyleSheet } from 'react-native';
     container: styles.container,
     calendarContainer: styles.calendarContainer,
     header: styles.header,
+  }}
+  dayProps={{
+    styles: {
+      base: {
+        container: styles.dayContainer,
+        dayName: styles.dayName,
+        dayNumber: styles.dayNumber,
+      },
+      today: {
+        container: styles.todayContainer,
+      },
+      selected: {
+        container: styles.selectedContainer,
+      },
+    },
   }}
 />;
 
@@ -99,6 +273,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  dayContainer: {
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 24,
+  },
+  dayName: {
+    fontSize: 10,
+    color: '#6b7280',
+  },
+  dayNumber: {
+    fontSize: 14,
+    color: '#374151',
+    fontWeight: '600',
+  },
+  todayContainer: {
+    backgroundColor: '#dbeafe',
+    borderWidth: 2,
+    borderColor: '#3b82f6',
+  },
+  selectedContainer: {
+    backgroundColor: '#3b82f6',
+  },
 });
 ```
 
@@ -111,36 +309,53 @@ const styles = StyleSheet.create({
     calendarContainer: 'flex-row items-center',
     header: 'text-lg font-bold',
   }}
+  dayProps={{
+    classNames: {
+      base: {
+        container: 'w-12 h-12 items-center justify-center rounded-full',
+        dayName: 'text-xs text-gray-500 font-medium',
+        dayNumber: 'text-sm text-gray-700 font-semibold',
+      },
+      today: {
+        container: 'bg-blue-100 border-2 border-blue-500',
+      },
+      selected: {
+        container: 'bg-blue-500',
+        dayNumber: 'text-white',
+      },
+    },
+  }}
 />
 ```
 
 ## Custom Rendering
 
-### Custom Header
+### Custom Day Renderer
 
 ```tsx
 <StripCalendar
-  renderHeader={(dateString) => (
-    <Text style={styles.customHeader}>
-      {format(new Date(dateString), 'MMMM yyyy')}
-    </Text>
-  )}
-/>
-```
-
-### Custom Day
-
-```tsx
-<StripCalendar
-  renderDay={({ date, markedDates }) => (
+  renderDay={({
+    date,
+    isSelected,
+    isDisabled,
+    isMarked,
+    dayName,
+    dayNumber,
+    onPress,
+  }) => (
     <Pressable
       style={[
-        styles.day,
-        markedDates?.includes(date.dateString) && styles.markedDay,
+        styles.customDay,
+        isSelected && styles.selectedDay,
+        isMarked && styles.markedDay,
+        isDisabled && styles.disabledDay,
       ]}
-      onPress={() => onDateSelect(date.dateString)}
+      onPress={onPress}
+      disabled={isDisabled}
     >
-      <Text style={styles.dayText}>{date.day}</Text>
+      <Text style={styles.dayName}>{dayName}</Text>
+      <Text style={styles.dayNumber}>{dayNumber}</Text>
+      {isMarked && <View style={styles.indicator} />}
     </Pressable>
   )}
 />
@@ -158,9 +373,8 @@ import { useHorizontalCalendar } from 'react-native-strip-calendar';
 const {
   weeksData,
   selectedDate,
-  centerDate,
-  initialScrollIndex,
   currentScrollIndex,
+  initialScrollIndex,
   canGoNext,
   canGoPrevious,
   handleDateSelect,
