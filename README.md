@@ -64,7 +64,7 @@ export default function MyComponent() {
 }
 ```
 
-### With Custom Day Styling
+### With Custom Day Styling (using dayProps)
 
 ```tsx
 <StripCalendar
@@ -147,6 +147,75 @@ export default function MyComponent() {
 </StripCalendar>
 ```
 
+### With Custom Day Renderer (using renderDay)
+
+```tsx
+<StripCalendar
+  startDate={new Date('2025-01-01')}
+  endDate={new Date('2025-12-31')}
+  initialDate={new Date()}
+  selectedDate={selectedDate}
+  onDateChange={setSelectedDate}
+  markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
+>
+  <StripCalendar.Header>
+    {(dateString) => (
+      <Text style={styles.header}>
+        {format(new Date(dateString), 'MMMM yyyy')}
+      </Text>
+    )}
+  </StripCalendar.Header>
+  <StripCalendar.Week
+    renderDay={({
+      date,
+      isSelected,
+      isDisabled,
+      isMarked,
+      dayName,
+      dayNumber,
+      onPress,
+    }) => (
+      <Pressable
+        style={[
+          styles.customDay,
+          isSelected && styles.selectedDay,
+          isMarked && styles.markedDay,
+          isDisabled && styles.disabledDay,
+        ]}
+        onPress={onPress}
+        disabled={isDisabled}
+      >
+        <Text style={styles.dayName}>{dayName}</Text>
+        <Text style={styles.dayNumber}>{dayNumber}</Text>
+        {isMarked && <View style={styles.indicator} />}
+      </Pressable>
+    )}
+  />
+  <StripCalendar.Navigation>
+    <StripCalendar.PreviousButton>
+      {({ disabled }) => (
+        <Pressable
+          style={[styles.button, disabled && styles.disabledButton]}
+          disabled={disabled}
+        >
+          <Text>‹</Text>
+        </Pressable>
+      )}
+    </StripCalendar.PreviousButton>
+    <StripCalendar.NextButton>
+      {({ disabled }) => (
+        <Pressable
+          style={[styles.button, disabled && styles.disabledButton]}
+          disabled={disabled}
+        >
+          <Text>›</Text>
+        </Pressable>
+      )}
+    </StripCalendar.NextButton>
+  </StripCalendar.Navigation>
+</StripCalendar>
+```
+
 ## Props
 
 ### StripCalendarProps
@@ -170,12 +239,15 @@ export default function MyComponent() {
 
 ### StripCalendar.Week Props
 
-| Prop        | Type                   | Description                   |
-| ----------- | ---------------------- | ----------------------------- |
-| `dayProps`  | `DayProps`             | Props for the Day component   |
-| `renderDay` | `(props) => ReactNode` | Custom day renderer function  |
-| `className` | `string`               | CSS class name for the week   |
-| `style`     | `ViewStyle`            | StyleSheet style for the week |
+| Prop        | Type                   | Description                              |
+| ----------- | ---------------------- | ---------------------------------------- |
+| `dayProps`  | `DayProps`             | Props for the Day component              |
+| `renderDay` | `(props) => ReactNode` | Custom day renderer function             |
+| `className` | `object`               | CSS class names for container and week   |
+| `style`     | `object`               | StyleSheet styles for container and week |
+| `children`  | `ReactNode`            | Custom children to render                |
+
+**Note:** When `renderDay` is provided, `dayProps` are ignored. Use either `dayProps` for styling the default Day component or `renderDay` for completely custom day rendering.
 
 ### DayProps
 
@@ -205,12 +277,20 @@ Renders the calendar header with the selected date.
 
 ### StripCalendar.Week
 
-Renders the week view with days.
+Renders the week view with days. Supports two approaches:
+
+#### Using dayProps (Default Day Component)
 
 ```tsx
 <StripCalendar.Week
-  className="custom-week"
-  style={styles.week}
+  className={{
+    container: 'list-container',
+    week: 'week-item',
+  }}
+  style={{
+    container: { padding: 16 },
+    week: { marginBottom: 8 },
+  }}
   dayProps={{
     styles: {
       base: {
@@ -225,6 +305,21 @@ Renders the week view with days.
         container: styles.selectedContainer,
       },
     },
+  }}
+/>
+```
+
+#### Using renderDay (Custom Day Component)
+
+```tsx
+<StripCalendar.Week
+  className={{
+    container: 'list-container',
+    week: 'week-item',
+  }}
+  style={{
+    container: { padding: 16 },
+    week: { marginBottom: 8 },
   }}
   renderDay={({
     date,
