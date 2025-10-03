@@ -74,44 +74,6 @@ export default function MyComponent() {
   selectedDate={selectedDate}
   onDateChange={setSelectedDate}
   markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
-  dayProps={{
-    styles: {
-      base: {
-        container: {
-          width: 48,
-          height: 48,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 24,
-        },
-        dayName: {
-          fontSize: 10,
-          color: '#6b7280',
-          fontWeight: '500',
-        },
-        dayNumber: {
-          fontSize: 14,
-          color: '#374151',
-          fontWeight: '600',
-        },
-      },
-      today: {
-        container: {
-          backgroundColor: '#dbeafe',
-          borderWidth: 2,
-          borderColor: '#3b82f6',
-        },
-      },
-      selected: {
-        container: {
-          backgroundColor: '#3b82f6',
-        },
-        dayNumber: {
-          color: '#ffffff',
-        },
-      },
-    },
-  }}
 >
   <StripCalendar.Header>
     {(dateString) => (
@@ -120,7 +82,46 @@ export default function MyComponent() {
       </Text>
     )}
   </StripCalendar.Header>
-  <StripCalendar.Week />
+  <StripCalendar.Week
+    dayProps={{
+      styles: {
+        base: {
+          container: {
+            width: 48,
+            height: 48,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 24,
+          },
+          dayName: {
+            fontSize: 10,
+            color: '#6b7280',
+            fontWeight: '500',
+          },
+          dayNumber: {
+            fontSize: 14,
+            color: '#374151',
+            fontWeight: '600',
+          },
+        },
+        today: {
+          container: {
+            backgroundColor: '#dbeafe',
+            borderWidth: 2,
+            borderColor: '#3b82f6',
+          },
+        },
+        selected: {
+          container: {
+            backgroundColor: '#3b82f6',
+          },
+          dayNumber: {
+            color: '#ffffff',
+          },
+        },
+      },
+    }}
+  />
   <StripCalendar.Navigation>
     <StripCalendar.PreviousButton>
       {({ disabled }) => (
@@ -166,8 +167,15 @@ export default function MyComponent() {
 | `classNames`      | `object`                 | `{}`         | CSS class names for styling (NativeWind)       |
 | `styles`          | `object`                 | `{}`         | StyleSheet styles for styling                  |
 | `locale`          | `Locale`                 | `enUS`       | Locale for date formatting                     |
-| `renderDay`       | `(props) => ReactNode`   | `undefined`  | Custom day renderer                            |
-| `dayProps`        | `DayProps`               | `undefined`  | Props for the Day component                    |
+
+### StripCalendar.Week Props
+
+| Prop        | Type                   | Description                   |
+| ----------- | ---------------------- | ----------------------------- |
+| `dayProps`  | `DayProps`             | Props for the Day component   |
+| `renderDay` | `(props) => ReactNode` | Custom day renderer function  |
+| `className` | `string`               | CSS class name for the week   |
+| `style`     | `ViewStyle`            | StyleSheet style for the week |
 
 ### DayProps
 
@@ -203,7 +211,45 @@ Renders the week view with days.
 <StripCalendar.Week
   className="custom-week"
   style={styles.week}
-  dayProps={customDayProps}
+  dayProps={{
+    styles: {
+      base: {
+        container: styles.dayContainer,
+        dayName: styles.dayName,
+        dayNumber: styles.dayNumber,
+      },
+      today: {
+        container: styles.todayContainer,
+      },
+      selected: {
+        container: styles.selectedContainer,
+      },
+    },
+  }}
+  renderDay={({
+    date,
+    isSelected,
+    isDisabled,
+    isMarked,
+    dayName,
+    dayNumber,
+    onPress,
+  }) => (
+    <Pressable
+      style={[
+        styles.customDay,
+        isSelected && styles.selectedDay,
+        isMarked && styles.markedDay,
+        isDisabled && styles.disabledDay,
+      ]}
+      onPress={onPress}
+      disabled={isDisabled}
+    >
+      <Text style={styles.dayName}>{dayName}</Text>
+      <Text style={styles.dayNumber}>{dayNumber}</Text>
+      {isMarked && <View style={styles.indicator} />}
+    </Pressable>
+  )}
 />
 ```
 
@@ -212,7 +258,11 @@ Renders the week view with days.
 Renders a single day (useful for custom layouts).
 
 ```tsx
-<StripCalendar.Day date={dateObject} styles={customDayStyles} />
+<StripCalendar.Day
+  date={dateObject}
+  styles={customDayStyles}
+  classNames={customDayClassNames}
+/>
 ```
 
 ### StripCalendar.Navigation
@@ -237,42 +287,27 @@ Container for navigation buttons.
 ```tsx
 import { StyleSheet } from 'react-native';
 
-<StripCalendar
-  styles={{
-    container: styles.container,
-    calendarContainer: styles.calendarContainer,
-    header: styles.header,
-  }}
-  dayProps={{
-    styles: {
-      base: {
-        container: styles.dayContainer,
-        dayName: styles.dayName,
-        dayNumber: styles.dayNumber,
+<StripCalendar>
+  <StripCalendar.Week
+    dayProps={{
+      styles: {
+        base: {
+          container: styles.dayContainer,
+          dayName: styles.dayName,
+          dayNumber: styles.dayNumber,
+        },
+        today: {
+          container: styles.todayContainer,
+        },
+        selected: {
+          container: styles.selectedContainer,
+        },
       },
-      today: {
-        container: styles.todayContainer,
-      },
-      selected: {
-        container: styles.selectedContainer,
-      },
-    },
-  }}
-/>;
+    }}
+  />
+</StripCalendar>;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#f5f5f5',
-    padding: 16,
-  },
-  calendarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   dayContainer: {
     width: 48,
     height: 48,
@@ -303,29 +338,26 @@ const styles = StyleSheet.create({
 ### NativeWind/ClassName Approach
 
 ```tsx
-<StripCalendar
-  classNames={{
-    container: 'bg-gray-100 p-4',
-    calendarContainer: 'flex-row items-center',
-    header: 'text-lg font-bold',
-  }}
-  dayProps={{
-    classNames: {
-      base: {
-        container: 'w-12 h-12 items-center justify-center rounded-full',
-        dayName: 'text-xs text-gray-500 font-medium',
-        dayNumber: 'text-sm text-gray-700 font-semibold',
+<StripCalendar>
+  <StripCalendar.Week
+    dayProps={{
+      classNames: {
+        base: {
+          container: 'w-12 h-12 items-center justify-center rounded-full',
+          dayName: 'text-xs text-gray-500 font-medium',
+          dayNumber: 'text-sm text-gray-700 font-semibold',
+        },
+        today: {
+          container: 'bg-blue-100 border-2 border-blue-500',
+        },
+        selected: {
+          container: 'bg-blue-500',
+          dayNumber: 'text-white',
+        },
       },
-      today: {
-        container: 'bg-blue-100 border-2 border-blue-500',
-      },
-      selected: {
-        container: 'bg-blue-500',
-        dayNumber: 'text-white',
-      },
-    },
-  }}
-/>
+    }}
+  />
+</StripCalendar>
 ```
 
 ## Custom Rendering
@@ -333,32 +365,34 @@ const styles = StyleSheet.create({
 ### Custom Day Renderer
 
 ```tsx
-<StripCalendar
-  renderDay={({
-    date,
-    isSelected,
-    isDisabled,
-    isMarked,
-    dayName,
-    dayNumber,
-    onPress,
-  }) => (
-    <Pressable
-      style={[
-        styles.customDay,
-        isSelected && styles.selectedDay,
-        isMarked && styles.markedDay,
-        isDisabled && styles.disabledDay,
-      ]}
-      onPress={onPress}
-      disabled={isDisabled}
-    >
-      <Text style={styles.dayName}>{dayName}</Text>
-      <Text style={styles.dayNumber}>{dayNumber}</Text>
-      {isMarked && <View style={styles.indicator} />}
-    </Pressable>
-  )}
-/>
+<StripCalendar>
+  <StripCalendar.Week
+    renderDay={({
+      date,
+      isSelected,
+      isDisabled,
+      isMarked,
+      dayName,
+      dayNumber,
+      onPress,
+    }) => (
+      <Pressable
+        style={[
+          styles.customDay,
+          isSelected && styles.selectedDay,
+          isMarked && styles.markedDay,
+          isDisabled && styles.disabledDay,
+        ]}
+        onPress={onPress}
+        disabled={isDisabled}
+      >
+        <Text style={styles.dayName}>{dayName}</Text>
+        <Text style={styles.dayNumber}>{dayNumber}</Text>
+        {isMarked && <View style={styles.indicator} />}
+      </Pressable>
+    )}
+  />
+</StripCalendar>
 ```
 
 ## Hooks
