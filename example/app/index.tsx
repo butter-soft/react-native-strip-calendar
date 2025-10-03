@@ -32,86 +32,84 @@ export default function Home() {
                 </Text>
               )}
             </StripCalendar.Header>
-            <StripCalendar.Navigation>
-              <StripCalendar.PreviousButton>
-                {({ disabled }) => (
-                  <Text style={[styles.navButton, disabled && styles.disabledNavButton]}>
-                    {disabled ? 'x' : '‹'}
-                  </Text>
-                )}
-              </StripCalendar.PreviousButton>
-              <StripCalendar.Week
-                dayProps={{
-                  styles: {
-                    base: {
-                      container: {
-                        width: 48,
-                        height: 48,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 24,
-                      },
-                      dayName: {
-                        fontSize: 10,
-                        color: '#6b7280',
-                        fontWeight: '500',
-                      },
-                      dayNumber: {
-                        fontSize: 14,
-                        color: '#374151',
-                        fontWeight: '600',
-                      },
+            <StripCalendar.PreviousButton>
+              {({ disabled }) => (
+                <Text style={[styles.navButton, disabled && styles.disabledNavButton]}>
+                  {disabled ? 'x' : '‹'}
+                </Text>
+              )}
+            </StripCalendar.PreviousButton>
+            <StripCalendar.Week
+              dayProps={{
+                styles: {
+                  base: {
+                    container: {
+                      width: 48,
+                      height: 48,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 24,
                     },
-                    today: {
-                      container: {
-                        backgroundColor: '#dbeafe',
-                        borderWidth: 2,
-                        borderColor: '#3b82f6',
-                      },
-                      dayName: {
-                        color: '#3b82f6',
-                        fontWeight: '700',
-                      },
-                      dayNumber: {
-                        color: '#3b82f6',
-                        fontWeight: '700',
-                      },
+                    dayName: {
+                      fontSize: 10,
+                      color: '#6b7280',
+                      fontWeight: '500',
                     },
-                    selected: {
-                      container: {
-                        backgroundColor: '#3b82f6',
-                      },
-                      dayName: {
-                        color: '#ffffff',
-                        fontWeight: '700',
-                      },
-                      dayNumber: {
-                        color: '#ffffff',
-                        fontWeight: '700',
-                      },
-                    },
-                    disabled: {
-                      container: {
-                        opacity: 0.5,
-                      },
-                      dayName: {
-                        color: '#9ca3af',
-                      },
-                      dayNumber: {
-                        color: '#9ca3af',
-                      },
+                    dayNumber: {
+                      fontSize: 14,
+                      color: '#374151',
+                      fontWeight: '600',
                     },
                   },
-                }}
-              />
-              <StripCalendar.NextButton>
-                {({ disabled }) => (
-                  <Text style={[styles.navButton, disabled && styles.disabledNavButton]}>
-                    {disabled ? 'x' : '›'}
-                  </Text>
-                )}
-              </StripCalendar.NextButton>
-            </StripCalendar.Navigation>
+                  today: {
+                    container: {
+                      backgroundColor: '#dbeafe',
+                      borderWidth: 2,
+                      borderColor: '#3b82f6',
+                    },
+                    dayName: {
+                      color: '#3b82f6',
+                      fontWeight: '700',
+                    },
+                    dayNumber: {
+                      color: '#3b82f6',
+                      fontWeight: '700',
+                    },
+                  },
+                  selected: {
+                    container: {
+                      backgroundColor: '#3b82f6',
+                    },
+                    dayName: {
+                      color: '#ffffff',
+                      fontWeight: '700',
+                    },
+                    dayNumber: {
+                      color: '#ffffff',
+                      fontWeight: '700',
+                    },
+                  },
+                  disabled: {
+                    container: {
+                      opacity: 0.5,
+                    },
+                    dayName: {
+                      color: '#9ca3af',
+                    },
+                    dayNumber: {
+                      color: '#9ca3af',
+                    },
+                  },
+                },
+              }}
+            />
+            <StripCalendar.NextButton>
+              {({ disabled }) => (
+                <Text style={[styles.navButton, disabled && styles.disabledNavButton]}>
+                  {disabled ? 'x' : '›'}
+                </Text>
+              )}
+            </StripCalendar.NextButton>
           </StripCalendar>
           {selectedDate && (
             <View style={styles.selectedInfo}>
