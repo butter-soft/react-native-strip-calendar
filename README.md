@@ -360,21 +360,6 @@ Renders a single day (useful for custom layouts).
 />
 ```
 
-### StripCalendar.Navigation
-
-Container for navigation buttons.
-
-```tsx
-<StripCalendar.Navigation>
-  <StripCalendar.PreviousButton>
-    {({ disabled }) => <Button disabled={disabled}>Previous</Button>}
-  </StripCalendar.PreviousButton>
-  <StripCalendar.NextButton>
-    {({ disabled }) => <Button disabled={disabled}>Next</Button>}
-  </StripCalendar.NextButton>
-</StripCalendar.Navigation>
-```
-
 ## Styling
 
 ### StyleSheet Approach
