@@ -58,7 +58,6 @@ export interface StripCalendarProps {
     dayNumber: number;
     onPress: () => void;
   }) => ReactNode;
-  dayProps?: Omit<DayProps, 'date'>;
 }
 
 export function StripCalendar({
@@ -88,7 +87,6 @@ export function StripCalendar({
   },
   children,
   renderDay,
-  dayProps,
 }: StripCalendarProps) {
   const {
     weeksData,
@@ -124,7 +122,6 @@ export function StripCalendar({
     goToNextWeek,
     goToPreviousWeek,
     renderDay,
-    dayProps,
     initialScrollIndex,
     currentScrollIndex,
   };
@@ -157,7 +154,7 @@ StripCalendar.Header = function ({
   const { selectedDate } = useStripCalendarContext();
 
   return (
-    <View className={cn('', className)} style={[defaultStyles.header, style]}>
+    <View className={className} style={[style]}>
       {children(selectedDate)}
     </View>
   );
@@ -184,14 +181,11 @@ StripCalendar.Week = function ({
     initialScrollIndex,
     currentScrollIndex,
     renderDay,
-    dayProps: contextDayProps,
     selectedDate,
     markedDates = [],
     onDateSelect,
     locale,
   } = useStripCalendarContext();
-
-  const finalDayProps = weekDayProps || contextDayProps;
 
   const handleInitialLayout = useCallback(() => {
     if (listRef.current && initialScrollIndex >= 0 && !hasInitialized) {
@@ -244,7 +238,7 @@ StripCalendar.Week = function ({
                   </View>
                 );
               } else {
-                return <Day key={date.id} date={date} {...finalDayProps} />;
+                return <Day key={date.id} date={date} {...weekDayProps} />;
               }
             })}
         </Week>
@@ -273,10 +267,7 @@ StripCalendar.Navigation = function ({
   style?: StyleProp<ViewStyle>;
 }) {
   return (
-    <View
-      className={cn('', className)}
-      style={[defaultStyles.navigation, style]}
-    >
+    <View className={className} style={[style]}>
       {children}
     </View>
   );
@@ -295,8 +286,8 @@ StripCalendar.PreviousButton = function ({
 
   return (
     <Pressable
-      className={cn('', className)}
-      style={[defaultStyles.button, style]}
+      className={className}
+      style={[style]}
       onPress={goToPreviousWeek}
       disabled={!canGoPrevious}
     >
@@ -318,8 +309,8 @@ StripCalendar.NextButton = function ({
 
   return (
     <Pressable
-      className={cn('', className)}
-      style={[defaultStyles.button, style]}
+      className={className}
+      style={[style]}
       onPress={goToNextWeek}
       disabled={!canGoNext}
     >
@@ -331,16 +322,5 @@ StripCalendar.NextButton = function ({
 const defaultStyles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-  },
-  header: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navigation: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    padding: 8,
   },
 });

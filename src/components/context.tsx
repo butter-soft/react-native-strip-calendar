@@ -1,5 +1,4 @@
 import type { CalendarDate, WeekData } from '../lib/generate-dates';
-import type { DayProps } from './day/day';
 import type { Locale } from 'date-fns';
 import { createContext, useContext, type ReactNode } from 'react';
 
@@ -25,7 +24,6 @@ export interface StripCalendarContextValue {
     dayNumber: number;
     onPress: () => void;
   }) => ReactNode;
-  dayProps?: Omit<DayProps, 'date'>;
 }
 
 const StripCalendarContext = createContext<StripCalendarContextValue | null>(
