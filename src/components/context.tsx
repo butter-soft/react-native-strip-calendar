@@ -1,7 +1,6 @@
-import type { CalendarDate, WeekData } from '../lib/generate-dates';
-import type { DayProps } from './day/day';
+import type { WeekData } from '../lib/generate-dates';
 import type { Locale } from 'date-fns';
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext } from 'react';
 
 export interface StripCalendarContextValue {
   weeksData: WeekData[];
@@ -16,16 +15,6 @@ export interface StripCalendarContextValue {
   canGoPrevious: boolean;
   goToNextWeek: () => void;
   goToPreviousWeek: () => void;
-  renderDay?: (props: {
-    date: CalendarDate;
-    isSelected: boolean;
-    isDisabled: boolean;
-    isMarked: boolean;
-    dayName: string;
-    dayNumber: number;
-    onPress: () => void;
-  }) => ReactNode;
-  dayProps?: Omit<DayProps, 'date'>;
 }
 
 const StripCalendarContext = createContext<StripCalendarContextValue | null>(

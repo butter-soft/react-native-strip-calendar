@@ -1,5 +1,4 @@
 import { useHorizontalCalendar } from '../hook/use-horizontal-calendar';
-import { cn } from '../lib/cn';
 import type { CalendarDate, WeekData } from '../lib/generate-dates';
 import { StripCalendarContext, useStripCalendarContext } from './context';
 import { Day, type DayProps } from './day';
@@ -35,30 +34,10 @@ export interface StripCalendarProps {
   containerHeight?: number;
   itemWidth?: number;
   markedDates?: string[];
-  classNames?: {
-    container?: string;
-    calendarContainer?: string;
-    calendarVirtualListContainer?: string;
-    header?: string;
-  };
-  styles?: {
-    container?: StyleProp<ViewStyle>;
-    calendarContainer?: StyleProp<ViewStyle>;
-    calendarVirtualListContainer?: StyleProp<ViewStyle>;
-    header?: StyleProp<ViewStyle>;
-  };
+  classNames?: string;
+  styles?: StyleProp<ViewStyle>;
   locale?: Locale;
   children?: ReactNode;
-  renderDay?: (props: {
-    date: CalendarDate;
-    isSelected: boolean;
-    isDisabled: boolean;
-    isMarked: boolean;
-    dayName: string;
-    dayNumber: number;
-    onPress: () => void;
-  }) => ReactNode;
-  dayProps?: Omit<DayProps, 'date'>;
 }
 
 export function StripCalendar({
@@ -74,21 +53,9 @@ export function StripCalendar({
   itemWidth = 48,
   locale = enUS,
   markedDates,
-  classNames = {
-    container: '',
-    calendarContainer: '',
-    calendarVirtualListContainer: '',
-    header: '',
-  },
-  styles = {
-    container: {},
-    calendarContainer: {},
-    calendarVirtualListContainer: {},
-    header: {},
-  },
+  classNames,
+  styles,
   children,
-  renderDay,
-  dayProps,
 }: StripCalendarProps) {
   const {
     weeksData,
@@ -123,8 +90,6 @@ export function StripCalendar({
     canGoPrevious,
     goToNextWeek,
     goToPreviousWeek,
-    renderDay,
-    dayProps,
     initialScrollIndex,
     currentScrollIndex,
   };
@@ -132,12 +97,8 @@ export function StripCalendar({
   return (
     <StripCalendarContext.Provider value={contextValue}>
       <View
-        className={cn('', classNames.container)}
-        style={[
-          defaultStyles.container,
-          { height: containerHeight },
-          styles.container,
-        ]}
+        className={classNames}
+        style={[{ height: containerHeight }, styles]}
       >
         {children}
       </View>
@@ -157,22 +118,48 @@ StripCalendar.Header = function ({
   const { selectedDate } = useStripCalendarContext();
 
   return (
-    <View className={cn('', className)} style={[defaultStyles.header, style]}>
+    <View className={className} style={[style]}>
       {children(selectedDate)}
     </View>
   );
 };
 
 StripCalendar.Week = function ({
-  children,
-  className,
-  style,
+  className = {
+    container: '',
+    week: '',
+  },
+  style = {
+    container: {},
+    content: {},
+    week: {},
+  },
+  columnGap,
+  containerHeight,
   dayProps: weekDayProps,
+  renderDay: weekRenderDay,
 }: {
-  children?: ReactNode;
-  className?: string;
-  style?: StyleProp<ViewStyle>;
+  className?: {
+    container?: string;
+    week?: string;
+  };
+  style?: {
+    container?: StyleProp<ViewStyle>;
+    content?: StyleProp<ViewStyle>;
+    week?: StyleProp<ViewStyle>;
+  };
   dayProps?: Omit<DayProps, 'date'>;
+  columnGap?: number;
+  containerHeight?: number;
+  renderDay?: (props: {
+    date: CalendarDate;
+    isSelected: boolean;
+    isDisabled: boolean;
+    isMarked: boolean;
+    dayName: string;
+    dayNumber: number;
+    onPress: () => void;
+  }) => ReactNode;
 }) {
   const listRef = useRef<LegendListRef>(null);
 
@@ -183,15 +170,11 @@ StripCalendar.Week = function ({
     itemWidth,
     initialScrollIndex,
     currentScrollIndex,
-    renderDay,
-    dayProps: contextDayProps,
     selectedDate,
     markedDates = [],
     onDateSelect,
     locale,
   } = useStripCalendarContext();
-
-  const finalDayProps = weekDayProps || contextDayProps;
 
   const handleInitialLayout = useCallback(() => {
     if (listRef.current && initialScrollIndex >= 0 && !hasInitialized) {
@@ -213,15 +196,15 @@ StripCalendar.Week = function ({
   }, [currentScrollIndex, hasInitialized]);
 
   return (
-    <LegendList
-      ref={listRef}
-      data={weeksData}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }: { item: WeekData }) => (
-        <Week className={className} style={style}>
-          {children ||
-            item.dates.map((date) => {
-              if (renderDay) {
+    <View style={{ width: '100%', height: containerHeight ?? 100 }}>
+      <LegendList
+        ref={listRef}
+        data={weeksData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }: { item: WeekData }) => (
+          <Week className={className.week} style={style.week}>
+            {item.dates.map((date) => {
+              if (weekRenderDay) {
                 const currentDate = parseISO(date.dateString);
                 const selectedDateObj = parseISO(selectedDate);
                 const isSelected = isSameDay(currentDate, selectedDateObj);
@@ -232,7 +215,7 @@ StripCalendar.Week = function ({
 
                 return (
                   <View key={date.id}>
-                    {renderDay({
+                    {weekRenderDay({
                       date,
                       isSelected,
                       isDisabled,
@@ -244,42 +227,28 @@ StripCalendar.Week = function ({
                   </View>
                 );
               } else {
-                return <Day key={date.id} date={date} {...finalDayProps} />;
+                return <Day key={date.id} date={date} {...weekDayProps} />;
               }
             })}
-        </Week>
-      )}
-      estimatedItemSize={itemWidth * 7}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      className={cn('', className)}
-      contentContainerStyle={style}
-      onLayout={handleInitialLayout}
-    />
+          </Week>
+        )}
+        estimatedItemSize={itemWidth * 7}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className={className.container}
+        style={[defaultStyles.listContainer, style.container]}
+        contentContainerStyle={[defaultStyles.listContent, style.content]}
+        ItemSeparatorComponent={() => (
+          <View style={{ width: columnGap ?? 12 }} />
+        )}
+        onLayout={handleInitialLayout}
+      />
+    </View>
   );
 };
 
 StripCalendar.Day = function (props: DayProps) {
   return <Day {...props} />;
-};
-
-StripCalendar.Navigation = function ({
-  children,
-  className,
-  style,
-}: {
-  children: ReactNode;
-  className?: string;
-  style?: StyleProp<ViewStyle>;
-}) {
-  return (
-    <View
-      className={cn('', className)}
-      style={[defaultStyles.navigation, style]}
-    >
-      {children}
-    </View>
-  );
 };
 
 StripCalendar.PreviousButton = function ({
@@ -295,8 +264,8 @@ StripCalendar.PreviousButton = function ({
 
   return (
     <Pressable
-      className={cn('', className)}
-      style={[defaultStyles.button, style]}
+      className={className}
+      style={style}
       onPress={goToPreviousWeek}
       disabled={!canGoPrevious}
     >
@@ -318,8 +287,8 @@ StripCalendar.NextButton = function ({
 
   return (
     <Pressable
-      className={cn('', className)}
-      style={[defaultStyles.button, style]}
+      className={className}
+      style={style}
       onPress={goToNextWeek}
       disabled={!canGoNext}
     >
@@ -330,17 +299,14 @@ StripCalendar.NextButton = function ({
 
 const defaultStyles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-  },
-  header: {
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  navigation: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  listContainer: {
+    height: 70,
   },
-  button: {
-    padding: 8,
+  listContent: {
+    height: '100%',
   },
 });
