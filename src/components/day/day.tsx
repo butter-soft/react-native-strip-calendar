@@ -8,19 +8,12 @@ import {
 } from './variant';
 import { format, isSameDay, isToday as isTodayFn, parseISO } from 'date-fns';
 import type { ReactNode } from 'react';
-import {
-  Pressable,
-  Text,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 export interface DayProps {
   date: CalendarDate;
   classNames?: DayStateClassNames;
   styles?: DayStateStyles;
-  textStyle?: StyleProp<ViewStyle>;
   formatString?: {
     dayName?: string;
     dayNumber?: string;
@@ -76,7 +69,6 @@ export function Day({
       indicator: {},
     },
   },
-  textStyle,
   formatString,
   renderDay,
 }: DayProps) {
@@ -149,10 +141,7 @@ export function Day({
       disabled={states.isDisabled}
       onPress={handlePress}
     >
-      <Text
-        className={elementClassNames.dayName}
-        style={[elementStyles.dayName, textStyle]}
-      >
+      <Text className={elementClassNames.dayName} style={elementStyles.dayName}>
         {format(
           currentDate,
           formatString?.dayName ?? defaultFormatString.dayName,
@@ -165,7 +154,7 @@ export function Day({
       >
         <Text
           className={elementClassNames.dayNumber}
-          style={[elementStyles.dayNumber, textStyle]}
+          style={elementStyles.dayNumber}
         >
           {format(
             currentDate,

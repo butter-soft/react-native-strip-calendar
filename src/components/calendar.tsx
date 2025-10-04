@@ -34,18 +34,8 @@ export interface StripCalendarProps {
   containerHeight?: number;
   itemWidth?: number;
   markedDates?: string[];
-  classNames?: {
-    container?: string;
-    calendarContainer?: string;
-    calendarVirtualListContainer?: string;
-    header?: string;
-  };
-  styles?: {
-    container?: StyleProp<ViewStyle>;
-    calendarContainer?: StyleProp<ViewStyle>;
-    calendarVirtualListContainer?: StyleProp<ViewStyle>;
-    header?: StyleProp<ViewStyle>;
-  };
+  classNames?: string;
+  styles?: StyleProp<ViewStyle>;
   locale?: Locale;
   children?: ReactNode;
 }
@@ -63,18 +53,8 @@ export function StripCalendar({
   itemWidth = 48,
   locale = enUS,
   markedDates,
-  classNames = {
-    container: '',
-    calendarContainer: '',
-    calendarVirtualListContainer: '',
-    header: '',
-  },
-  styles = {
-    container: {},
-    calendarContainer: {},
-    calendarVirtualListContainer: {},
-    header: {},
-  },
+  classNames,
+  styles,
   children,
 }: StripCalendarProps) {
   const {
@@ -117,12 +97,8 @@ export function StripCalendar({
   return (
     <StripCalendarContext.Provider value={contextValue}>
       <View
-        className={classNames.container}
-        style={[
-          defaultStyles.container,
-          { height: containerHeight },
-          styles.container,
-        ]}
+        className={classNames}
+        style={[{ height: containerHeight }, styles]}
       >
         {children}
       </View>
@@ -149,28 +125,32 @@ StripCalendar.Header = function ({
 };
 
 StripCalendar.Week = function ({
-  children,
   className = {
     container: '',
     week: '',
   },
   style = {
     container: {},
+    content: {},
     week: {},
   },
+  columnGap,
+  containerHeight,
   dayProps: weekDayProps,
   renderDay: weekRenderDay,
 }: {
-  children?: ReactNode;
   className?: {
     container?: string;
     week?: string;
   };
   style?: {
     container?: StyleProp<ViewStyle>;
+    content?: StyleProp<ViewStyle>;
     week?: StyleProp<ViewStyle>;
   };
   dayProps?: Omit<DayProps, 'date'>;
+  columnGap?: number;
+  containerHeight?: number;
   renderDay?: (props: {
     date: CalendarDate;
     isSelected: boolean;
@@ -216,14 +196,14 @@ StripCalendar.Week = function ({
   }, [currentScrollIndex, hasInitialized]);
 
   return (
-    <LegendList
-      ref={listRef}
-      data={weeksData}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }: { item: WeekData }) => (
-        <Week className={className.week} style={style.week}>
-          {children ||
-            item.dates.map((date) => {
+    <View style={{ width: '100%', height: containerHeight ?? 100 }}>
+      <LegendList
+        ref={listRef}
+        data={weeksData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }: { item: WeekData }) => (
+          <Week className={className.week} style={style.week}>
+            {item.dates.map((date) => {
               if (weekRenderDay) {
                 const currentDate = parseISO(date.dateString);
                 const selectedDateObj = parseISO(selectedDate);
@@ -250,15 +230,20 @@ StripCalendar.Week = function ({
                 return <Day key={date.id} date={date} {...weekDayProps} />;
               }
             })}
-        </Week>
-      )}
-      estimatedItemSize={itemWidth * 7}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      className={className.container}
-      contentContainerStyle={style.container}
-      onLayout={handleInitialLayout}
-    />
+          </Week>
+        )}
+        estimatedItemSize={itemWidth * 7}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        className={className.container}
+        style={[defaultStyles.listContainer, style.container]}
+        contentContainerStyle={[defaultStyles.listContent, style.content]}
+        ItemSeparatorComponent={() => (
+          <View style={{ width: columnGap ?? 12 }} />
+        )}
+        onLayout={handleInitialLayout}
+      />
+    </View>
   );
 };
 
@@ -280,7 +265,7 @@ StripCalendar.PreviousButton = function ({
   return (
     <Pressable
       className={className}
-      style={[style]}
+      style={style}
       onPress={goToPreviousWeek}
       disabled={!canGoPrevious}
     >
@@ -303,7 +288,7 @@ StripCalendar.NextButton = function ({
   return (
     <Pressable
       className={className}
-      style={[style]}
+      style={style}
       onPress={goToNextWeek}
       disabled={!canGoNext}
     >
@@ -314,6 +299,14 @@ StripCalendar.NextButton = function ({
 
 const defaultStyles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  listContainer: {
+    height: 70,
+  },
+  listContent: {
+    height: '100%',
   },
 });
