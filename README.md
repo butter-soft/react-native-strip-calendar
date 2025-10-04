@@ -1,5 +1,11 @@
 # React Native Strip Calendar
 
+<div align="center">
+
+![화면 기록 2025-10-04 오후 2 52 31](https://github.com/user-attachments/assets/6043bdb5-9554-4cba-8b9e-9b44405355d8)
+
+</div>
+
 A headless, customizable horizontal strip calendar component for React Native with virtualized scrolling and flexible styling support.
 
 ## Features
