@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 
-import { Container } from '@/components/Container';
 import { StripCalendar } from 'react-native-strip-calendar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,7 +9,7 @@ export default function Home() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
-      <Container>
+      <View style={{ flex: 1 }}>
         <View style={styles.container}>
           <Text style={styles.title}>📅 Strip Calendar Example</Text>
           <StripCalendar
@@ -20,7 +19,7 @@ export default function Home() {
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
             markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
-            containerHeight={120}
+            containerHeight={220}
             itemWidth={48}>
             <StripCalendar.Header>
               {(dateString) => (
@@ -37,6 +36,7 @@ export default function Home() {
             </StripCalendar.Header>
             <StripCalendar.Week
               columnGap={16}
+              containerHeight={80}
               style={{
                 week: {
                   flexDirection: 'row',
@@ -149,19 +149,17 @@ export default function Home() {
               </StripCalendar.NextButton>
             </View>
           </StripCalendar>
-          {selectedDate && (
-            <View style={styles.selectedInfo}>
-              <Text style={styles.selectedLabel}>Selected Date</Text>
-              <Text style={styles.selectedText}>
-                {new Date(selectedDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  weekday: 'long',
-                })}
-              </Text>
-            </View>
-          )}
+          <View style={styles.selectedInfo}>
+            <Text style={styles.selectedLabel}>Selected Date</Text>
+            <Text style={styles.selectedText}>
+              {new Date(selectedDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long',
+              })}
+            </Text>
+          </View>
           <View style={styles.infoContainer}>
             <Text style={styles.infoTitle}>✨ Features</Text>
             <View style={styles.featureList}>
@@ -173,7 +171,7 @@ export default function Home() {
             </View>
           </View>
         </View>
-      </Container>
+      </View>
     </SafeAreaView>
   );
 }
@@ -210,6 +208,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   navigationContainer: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ffffff',
@@ -235,7 +234,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   navButtonText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#3b82f6',
   },
