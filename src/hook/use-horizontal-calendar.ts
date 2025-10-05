@@ -58,7 +58,6 @@ export function useHorizontalCalendar({
     return index >= 0 ? index : Math.floor(weeksData.length / 2);
   }, [weeksData, initialDate, firstDay]);
 
-  // 초기화 시 currentScrollIndex 설정
   useEffect(() => {
     setCurrentScrollIndex(initialScrollIndex);
   }, [initialScrollIndex]);
@@ -93,11 +92,13 @@ export function useHorizontalCalendar({
 
   const goToToday = useCallback(() => {
     const today = new Date();
+
     setSelectedDate(format(today, 'yyyy-MM-dd'));
 
     const targetWeekStart = startOfWeek(today, { weekStartsOn: firstDay });
     const targetWeekId = `week-${format(targetWeekStart, 'yyyy-MM-dd')}`;
     const index = weeksData.findIndex((week) => week.id === targetWeekId);
+
     if (index >= 0) {
       setCurrentScrollIndex(index);
     }
@@ -110,6 +111,7 @@ export function useHorizontalCalendar({
       });
       const targetWeekId = `week-${format(targetWeekStart, 'yyyy-MM-dd')}`;
       const index = weeksData.findIndex((week) => week.id === targetWeekId);
+
       if (index >= 0) {
         setCurrentScrollIndex(index);
       }

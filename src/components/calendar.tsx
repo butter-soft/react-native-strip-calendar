@@ -177,23 +177,25 @@ StripCalendar.Week = function ({
   } = useStripCalendarContext();
 
   const handleInitialLayout = useCallback(() => {
-    if (listRef.current && initialScrollIndex >= 0 && !hasInitialized) {
+    if (listRef.current && initialScrollIndex >= 0) {
       listRef.current?.scrollToIndex?.({
         index: initialScrollIndex,
         animated: false,
       });
       setHasInitialized(true);
     }
-  }, [initialScrollIndex, hasInitialized]);
+  }, [initialScrollIndex]);
 
   useEffect(() => {
-    if (listRef.current && currentScrollIndex >= 0 && hasInitialized) {
+    if (listRef.current && currentScrollIndex >= 0) {
+      console.log('currentScrollIndex', currentScrollIndex);
+
       listRef.current?.scrollToIndex?.({
         index: currentScrollIndex,
         animated: true,
       });
     }
-  }, [currentScrollIndex, hasInitialized]);
+  }, [currentScrollIndex]);
 
   return (
     <View style={{ width: '100%', height: containerHeight ?? 100 }}>
@@ -266,7 +268,7 @@ StripCalendar.PreviousButton = function ({
     <Pressable
       className={className}
       style={style}
-      onPress={goToPreviousWeek}
+      onTouchStart={goToPreviousWeek}
       disabled={!canGoPrevious}
     >
       {children({ disabled: !canGoPrevious })}
@@ -289,7 +291,7 @@ StripCalendar.NextButton = function ({
     <Pressable
       className={className}
       style={style}
-      onPress={goToNextWeek}
+      onTouchStart={goToNextWeek}
       disabled={!canGoNext}
     >
       {children({ disabled: !canGoNext })}
