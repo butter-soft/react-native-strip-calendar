@@ -19,8 +19,7 @@ export default function Home() {
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
             markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
-            containerHeight={220}
-            itemWidth={48}>
+            containerHeight={220}>
             <StripCalendar.Header>
               {(dateString) => (
                 <View style={styles.headerContainer}>
@@ -35,28 +34,23 @@ export default function Home() {
               )}
             </StripCalendar.Header>
             <StripCalendar.Week
-              columnGap={16}
+              columnGap={8}
               containerHeight={80}
               style={{
                 week: {
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingHorizontal: 8,
+                  columnGap: 8,
                 },
               }}
               dayProps={{
                 styles: {
                   base: {
                     container: {
-                      width: 48,
+                      flex: 1,
                       height: 60,
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderRadius: 20,
                       backgroundColor: '#f0f0f0',
-                      marginHorizontal: 1,
-                      marginVertical: 1,
                     },
                     dayName: {
                       fontSize: 9,
@@ -74,7 +68,6 @@ export default function Home() {
                     container: {
                       backgroundColor: '#dbeafe',
                       borderWidth: 2,
-                      borderColor: '#3b82f6',
                       shadowColor: '#3b82f6',
                       shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.2,
@@ -98,7 +91,6 @@ export default function Home() {
                       shadowOpacity: 0.3,
                       shadowRadius: 6,
                       elevation: 5,
-                      transform: [{ scale: 1.05 }],
                     },
                     dayName: {
                       color: '#ffffff',
