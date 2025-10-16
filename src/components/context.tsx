@@ -6,7 +6,6 @@ export interface StripCalendarContextValue {
   weeksData: WeekData[];
   selectedDate: string;
   onDateSelect: (date: string) => void;
-  itemWidth: number;
   locale: Locale;
   markedDates?: string[];
   initialScrollIndex: number;

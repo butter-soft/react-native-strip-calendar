@@ -817,8 +817,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@legendapp/list@2.0.9':
-    resolution: {integrity: sha512-HOSSNK6iJs59UCAiuNqLFJIfUZgUpytv65M88a+oV49kHpa2aSlPKSlZQFbkS0LWrDFljlh1OpbPByXdI18xkw==}
+  '@legendapp/list@2.0.12':
+    resolution: {integrity: sha512-yqeYQd4tFGwsl+GH0bobzW2zbw6Wca/IvI3tBPnLj/iRY65mjMfJNMZ0anN95wEd2lYodhCtl7njRvqaiBX4mA==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -4977,7 +4977,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@legendapp/list@2.0.9(react-native@0.79.5(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
+  '@legendapp/list@2.0.12(react-native@0.79.5(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)':
     dependencies:
       react: 19.0.0
       react-native: 0.79.5(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0)
@@ -7785,7 +7785,7 @@ snapshots:
 
   react-native-strip-calendar@file:..(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
     dependencies:
-      '@legendapp/list': 2.0.9(react-native@0.79.5(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@legendapp/list': 2.0.12(react-native@0.79.5(@babel/core@7.28.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       clsx: 2.1.1
       date-fns: 4.1.0
       react: 19.0.0

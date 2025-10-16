@@ -23,8 +23,6 @@ export interface DayProps {
 
 export interface DayRenderProps {
   date: CalendarDate;
-  isSelected: boolean;
-  isDisabled: boolean;
   isMarked: boolean;
   dayName: string;
   dayNumber: number;
@@ -101,8 +99,6 @@ export function Day({
   if (renderDay) {
     return renderDay({
       date,
-      isSelected: states.isSelected,
-      isDisabled: states.isDisabled,
       isMarked: states.isMarked,
       dayName: format(
         currentDate,

@@ -20,6 +20,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "example:install": "cd example && pnpm install && cd ..",
     "example:prebuild": "cd example && pnpm prebuild && cd ..",
     "example:android": "cd example && pnpm android && cd ..",
     "example:ios": "cd example && pnpm ios && cd .."
