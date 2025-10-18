@@ -3,7 +3,6 @@ import { Text, View, StyleSheet } from 'react-native';
 
 import { StripCalendar } from 'react-native-strip-calendar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ko } from 'date-fns/locale';
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState('2025-10-18');
@@ -21,8 +20,7 @@ export default function Home() {
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
             markedDates={['2025-10-15', '2025-10-18']}
-            containerHeight={77}
-            locale={ko}>
+            containerHeight={77}>
             <StripCalendar.Week
               columnGap={8}
               containerHeight={80}
