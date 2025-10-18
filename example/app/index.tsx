@@ -51,7 +51,6 @@ export default function Home() {
                     },
                     dayNumber: {
                       fontFamily: 'Pretendard',
-                      display: 'flex',
                       fontSize: 14,
                       color: '#CFCFD2',
                       fontWeight: '600',
@@ -221,7 +220,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     marginTop: 24,
     padding: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#111',
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -232,7 +231,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#1e293b',
+    color: 'white',
     marginBottom: 12,
   },
   featureList: {
