@@ -1,22 +1,16 @@
 import { useHorizontalCalendar } from '../hook/use-horizontal-calendar';
-import type { CalendarDate, WeekData } from '../lib/generate-dates';
+import type { WeekData } from '../lib/generate-dates';
 import { StripCalendarContext, useStripCalendarContext } from './context';
 import { Day, type DayProps } from './day';
 import { Week } from './week';
 import { LegendList, type LegendListRef } from '@legendapp/list';
 import { type Day as DateFnsDay, type Locale } from 'date-fns';
-import { parseISO, isSameDay, format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import {
-  useCallback,
-  useRef,
-  type ReactNode,
-  useEffect,
-  useState,
-} from 'react';
+import { useCallback, useRef, type ReactNode, useEffect } from 'react';
 import {
   Pressable,
   StyleSheet,
+  useWindowDimensions,
   View,
   type StyleProp,
   type ViewStyle,
@@ -32,7 +26,6 @@ export interface StripCalendarProps {
   selectedDate?: string;
   onDateChange?: (date: string) => void;
   containerHeight?: number;
-  itemWidth?: number;
   markedDates?: string[];
   classNames?: string;
   styles?: StyleProp<ViewStyle>;
@@ -50,7 +43,6 @@ export function StripCalendar({
   onDateChange,
   selectedDate: externalSelectedDate,
   containerHeight = 60,
-  itemWidth = 48,
   locale = enUS,
   markedDates,
   classNames,
@@ -83,7 +75,6 @@ export function StripCalendar({
     weeksData,
     selectedDate: currentSelectedDate,
     onDateSelect: handleDateSelect,
-    itemWidth,
     locale,
     markedDates,
     canGoNext,
@@ -137,7 +128,6 @@ StripCalendar.Week = function ({
   columnGap,
   containerHeight,
   dayProps: weekDayProps,
-  renderDay: weekRenderDay,
 }: {
   className?: {
     container?: string;
@@ -151,30 +141,12 @@ StripCalendar.Week = function ({
   dayProps?: Omit<DayProps, 'date'>;
   columnGap?: number;
   containerHeight?: number;
-  renderDay?: (props: {
-    date: CalendarDate;
-    isSelected: boolean;
-    isDisabled: boolean;
-    isMarked: boolean;
-    dayName: string;
-    dayNumber: number;
-    onPress: () => void;
-  }) => ReactNode;
 }) {
   const listRef = useRef<LegendListRef>(null);
+  const { width: windowWidth } = useWindowDimensions();
 
-  const [hasInitialized, setHasInitialized] = useState(false);
-
-  const {
-    weeksData,
-    itemWidth,
-    initialScrollIndex,
-    currentScrollIndex,
-    selectedDate,
-    markedDates = [],
-    onDateSelect,
-    locale,
-  } = useStripCalendarContext();
+  const { weeksData, initialScrollIndex, currentScrollIndex } =
+    useStripCalendarContext();
 
   const handleInitialLayout = useCallback(() => {
     if (listRef.current && initialScrollIndex >= 0) {
@@ -182,14 +154,11 @@ StripCalendar.Week = function ({
         index: initialScrollIndex,
         animated: false,
       });
-      setHasInitialized(true);
     }
   }, [initialScrollIndex]);
 
   useEffect(() => {
     if (listRef.current && currentScrollIndex >= 0) {
-      console.log('currentScrollIndex', currentScrollIndex);
-
       listRef.current?.scrollToIndex?.({
         index: currentScrollIndex,
         animated: true,
@@ -205,36 +174,12 @@ StripCalendar.Week = function ({
         keyExtractor={(item) => item.id}
         renderItem={({ item }: { item: WeekData }) => (
           <Week className={className.week} style={style.week}>
-            {item.dates.map((date) => {
-              if (weekRenderDay) {
-                const currentDate = parseISO(date.dateString);
-                const selectedDateObj = parseISO(selectedDate);
-                const isSelected = isSameDay(currentDate, selectedDateObj);
-                const isMarked = markedDates.some((markedDate) =>
-                  isSameDay(currentDate, parseISO(markedDate)),
-                );
-                const isDisabled = date.isDisabled;
-
-                return (
-                  <View key={date.id}>
-                    {weekRenderDay({
-                      date,
-                      isSelected,
-                      isDisabled,
-                      isMarked,
-                      dayName: format(currentDate, 'eee', { locale }),
-                      dayNumber: date.day,
-                      onPress: () => onDateSelect(date.dateString),
-                    })}
-                  </View>
-                );
-              } else {
-                return <Day key={date.id} date={date} {...weekDayProps} />;
-              }
-            })}
+            {item.dates.map((date) => (
+              <Day key={date.id} date={date} {...weekDayProps} />
+            ))}
           </Week>
         )}
-        estimatedItemSize={itemWidth * 7}
+        estimatedItemSize={windowWidth}
         horizontal
         showsHorizontalScrollIndicator={false}
         className={className.container}
