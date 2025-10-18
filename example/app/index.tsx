@@ -1,43 +1,34 @@
 import { useState } from 'react';
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 import { StripCalendar } from 'react-native-strip-calendar';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ko } from 'date-fns/locale';
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState('2025-10-18');
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: 'black' }}>
+      <View style={{ flex: 1, backgroundColor: 'black' }}>
         <View style={styles.container}>
           <Text style={styles.title}>📅 Strip Calendar Example</Text>
           <StripCalendar
             startDate={new Date('2025-01-01')}
             endDate={new Date('2025-12-31')}
+            maxDate={new Date('2025-10-31')}
             initialDate={new Date()}
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
-            markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
-            containerHeight={220}>
-            <StripCalendar.Header>
-              {(dateString) => (
-                <View style={styles.headerContainer}>
-                  <Text style={styles.headerText}>
-                    {new Date(dateString).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </Text>
-                </View>
-              )}
-            </StripCalendar.Header>
+            markedDates={['2025-10-15', '2025-10-18']}
+            containerHeight={77}
+            locale={ko}>
             <StripCalendar.Week
               columnGap={8}
               containerHeight={80}
               style={{
                 week: {
+                  width: 'auto',
                   columnGap: 8,
                 },
               }}
@@ -45,101 +36,71 @@ export default function Home() {
                 styles: {
                   base: {
                     container: {
-                      flex: 1,
-                      height: 60,
+                      width: 37,
+                      height: 77,
+                      paddingTop: 8,
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 20,
-                      backgroundColor: '#f0f0f0',
+                      justifyContent: 'flex-start',
                     },
                     dayName: {
-                      fontSize: 9,
+                      fontFamily: 'Pretendard',
+                      fontSize: 12,
                       color: '#6b7280',
                       fontWeight: '500',
                       marginBottom: 2,
                     },
                     dayNumber: {
-                      fontSize: 16,
-                      color: '#374151',
+                      fontFamily: 'Pretendard',
+                      display: 'flex',
+                      fontSize: 14,
+                      color: '#CFCFD2',
                       fontWeight: '600',
+                      borderRadius: 180,
+                      paddingTop: 8,
+                      width: 37,
+                      height: 49,
+                      lineHeight: 20,
+                      textAlign: 'center',
+                    },
+                    indicator: {
+                      width: 4,
+                      height: 4,
+                      backgroundColor: '#0BC19C',
+                      borderRadius: 180,
+                      position: 'absolute',
+                      bottom: 8,
+                      left: '50%',
+                      transform: [{ translateX: '-50%' }],
                     },
                   },
                   today: {
-                    container: {
-                      backgroundColor: '#dbeafe',
-                      borderWidth: 2,
-                      shadowColor: '#3b82f6',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 4,
-                      elevation: 3,
-                    },
-                    dayName: {
-                      color: '#3b82f6',
-                      fontWeight: '700',
-                    },
                     dayNumber: {
-                      color: '#3b82f6',
+                      backgroundColor: '#3C3B3E',
+                      color: '#FEFEFF',
                       fontWeight: '700',
+                    },
+                    indicator: {
+                      backgroundColor: '#FEFEFF',
                     },
                   },
                   selected: {
-                    container: {
-                      backgroundColor: '#3b82f6',
-                      shadowColor: '#3b82f6',
-                      shadowOffset: { width: 0, height: 3 },
-                      shadowOpacity: 0.3,
-                      shadowRadius: 6,
-                      elevation: 5,
-                    },
-                    dayName: {
-                      color: '#ffffff',
-                      fontWeight: '700',
-                    },
                     dayNumber: {
                       color: '#ffffff',
                       fontWeight: '700',
+                      backgroundColor: '#0A7B69',
+                    },
+                    indicator: {
+                      backgroundColor: '#FEFEFF',
                     },
                   },
                   disabled: {
-                    container: {
-                      opacity: 0.4,
-                      backgroundColor: '#f3f4f6',
-                    },
-                    dayName: {
-                      color: '#9ca3af',
-                    },
                     dayNumber: {
-                      color: '#9ca3af',
+                      color: '#434347',
                     },
                   },
                 },
               }}
             />
-            <View style={styles.navigationContainer}>
-              <StripCalendar.PreviousButton>
-                {({ disabled }) => (
-                  <Pressable
-                    style={[styles.navButton, disabled && styles.disabledNavButton]}
-                    disabled={disabled}>
-                    <Text style={[styles.navButtonText, disabled && styles.disabledNavButtonText]}>
-                      ‹
-                    </Text>
-                  </Pressable>
-                )}
-              </StripCalendar.PreviousButton>
-              <StripCalendar.NextButton>
-                {({ disabled }) => (
-                  <Pressable
-                    style={[styles.navButton, disabled && styles.disabledNavButton]}
-                    disabled={disabled}>
-                    <Text style={[styles.navButtonText, disabled && styles.disabledNavButtonText]}>
-                      ›
-                    </Text>
-                  </Pressable>
-                )}
-              </StripCalendar.NextButton>
-            </View>
           </StripCalendar>
           <View style={styles.selectedInfo}>
             <Text style={styles.selectedLabel}>Selected Date</Text>
@@ -172,14 +133,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'black',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 24,
     textAlign: 'center',
-    color: '#1e293b',
+    color: 'white',
   },
   headerContainer: {
     backgroundColor: '#ffffff',
