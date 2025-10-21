@@ -16,7 +16,6 @@ export default function Home() {
             startDate={new Date('2025-01-01')}
             endDate={new Date('2025-12-31')}
             maxDate={new Date('2025-10-31')}
-            initialDate={new Date()}
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
             markedDates={['2025-10-15', '2025-10-18']}
