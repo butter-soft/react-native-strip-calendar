@@ -1,30 +1,29 @@
 import { generateWeeksInRange } from '../lib/generate-dates';
 import { type Day, format, startOfWeek, subMonths, addMonths } from 'date-fns';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 export interface UseHorizontalCalendarOptions {
-  initialDate?: Date;
   firstDay?: Day;
   startDate?: Date;
   endDate?: Date;
   minDate?: Date;
   maxDate?: Date;
+  selectedDate?: string;
   onDateChange?: (date: string) => void;
 }
 
 export function useHorizontalCalendar({
-  initialDate = new Date(),
   firstDay = 1,
   startDate,
   endDate,
   minDate,
   maxDate,
+  selectedDate: externalSelectedDate,
   onDateChange,
 }: UseHorizontalCalendarOptions = {}) {
   const [selectedDate, setSelectedDate] = useState<string>(
-    format(initialDate, 'yyyy-MM-dd'),
+    externalSelectedDate || format(new Date(), 'yyyy-MM-dd'),
   );
-  const [currentScrollIndex, setCurrentScrollIndex] = useState(0);
 
   const dateRange = useMemo(() => {
     if (startDate && endDate) {
@@ -49,25 +48,40 @@ export function useHorizontalCalendar({
   }, [dateRange, firstDay, minDate, maxDate]);
 
   const initialScrollIndex = useMemo(() => {
-    const targetWeekStart = startOfWeek(initialDate, {
+    const targetDate = externalSelectedDate
+      ? new Date(externalSelectedDate)
+      : new Date();
+
+    const targetWeekStart = startOfWeek(targetDate, {
       weekStartsOn: firstDay,
     });
     const targetWeekId = `week-${format(targetWeekStart, 'yyyy-MM-dd')}`;
 
     const index = weeksData.findIndex((week) => week.id === targetWeekId);
-    return index >= 0 ? index : Math.floor(weeksData.length / 2);
-  }, [weeksData, initialDate, firstDay]);
 
-  useEffect(() => {
-    setCurrentScrollIndex(initialScrollIndex);
-  }, [initialScrollIndex]);
+    return index >= 0 ? index : Math.floor(weeksData.length / 2);
+  }, [weeksData, firstDay, externalSelectedDate]);
+
+  const [currentScrollIndex, setCurrentScrollIndex] =
+    useState(initialScrollIndex);
 
   const handleDateSelect = useCallback(
     (date: string) => {
       setSelectedDate(date);
       onDateChange?.(date);
+
+      const selectedDateObj = new Date(date);
+      const targetWeekStart = startOfWeek(selectedDateObj, {
+        weekStartsOn: firstDay,
+      });
+      const targetWeekId = `week-${format(targetWeekStart, 'yyyy-MM-dd')}`;
+      const weekIndex = weeksData.findIndex((week) => week.id === targetWeekId);
+
+      if (weekIndex >= 0) {
+        setCurrentScrollIndex(weekIndex);
+      }
     },
-    [onDateChange],
+    [onDateChange, weeksData, firstDay, currentScrollIndex],
   );
 
   const canGoNext = useMemo(() => {

@@ -6,7 +6,7 @@ import { Week } from './week';
 import { LegendList, type LegendListRef } from '@legendapp/list';
 import { type Day as DateFnsDay, type Locale } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { useCallback, useRef, type ReactNode, useEffect } from 'react';
+import { useRef, type ReactNode, useEffect } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -17,7 +17,6 @@ import {
 } from 'react-native';
 
 export interface StripCalendarProps {
-  initialDate?: Date;
   firstDay?: DateFnsDay;
   startDate?: Date;
   endDate?: Date;
@@ -34,7 +33,6 @@ export interface StripCalendarProps {
 }
 
 export function StripCalendar({
-  initialDate,
   firstDay = 1,
   startDate,
   endDate,
@@ -60,12 +58,12 @@ export function StripCalendar({
     canGoNext,
     canGoPrevious,
   } = useHorizontalCalendar({
-    initialDate,
     firstDay,
     startDate,
     endDate,
     minDate,
     maxDate,
+    selectedDate: externalSelectedDate,
     onDateChange,
   });
 
@@ -142,23 +140,18 @@ StripCalendar.Week = function ({
   columnGap?: number;
   containerHeight?: number;
 }) {
+  const initialRender = useRef<boolean>(true);
   const listRef = useRef<LegendListRef>(null);
+
   const { width: windowWidth } = useWindowDimensions();
 
   const { weeksData, initialScrollIndex, currentScrollIndex } =
     useStripCalendarContext();
 
-  const handleInitialLayout = useCallback(() => {
-    if (listRef.current && initialScrollIndex >= 0) {
-      listRef.current?.scrollToIndex?.({
-        index: initialScrollIndex,
-        animated: false,
-      });
-    }
-  }, [initialScrollIndex]);
-
   useEffect(() => {
-    if (listRef.current && currentScrollIndex >= 0) {
+    console.log('currentScrollIndex', currentScrollIndex);
+
+    if (currentScrollIndex >= 0 && !initialRender.current) {
       listRef.current?.scrollToIndex?.({
         index: currentScrollIndex,
         animated: true,
@@ -185,10 +178,13 @@ StripCalendar.Week = function ({
         className={className.container}
         style={[defaultStyles.listContainer, style.container]}
         contentContainerStyle={[defaultStyles.listContent, style.content]}
+        initialScrollIndex={initialScrollIndex}
         ItemSeparatorComponent={() => (
           <View style={{ width: columnGap ?? 12 }} />
         )}
-        onLayout={handleInitialLayout}
+        onLayout={() => {
+          initialRender.current = false;
+        }}
       />
     </View>
   );
