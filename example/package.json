@@ -4,8 +4,11 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "expo prebuild --clean",
+    "reset": "rm -rf node_modules && rm pnpm-lock.yaml && pnpm install && pnpm prebuild",
     "android": "expo run:android",
+    "android:device": "expo run:android --device",
     "ios": "expo run:ios",
+    "ios:device": "expo run:ios --device",
     "start": "expo start",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
