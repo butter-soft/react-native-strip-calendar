@@ -1,6 +1,6 @@
 import { generateWeeksInRange } from '../lib/generate-dates';
 import { type Day, format, startOfWeek, subMonths, addMonths } from 'date-fns';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export interface UseHorizontalCalendarOptions {
   firstDay?: Day;
@@ -155,6 +155,12 @@ export function useHorizontalCalendar({
     },
     [weeksData, firstDay],
   );
+
+  useEffect(() => {
+    if (isControlled && externalSelectedDate) {
+      setCurrentScrollIndex(initialScrollIndex);
+    }
+  }, [isControlled, externalSelectedDate, initialScrollIndex]);
 
   return {
     weeksData,
