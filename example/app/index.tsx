@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { StripCalendar } from 'react-native-strip-calendar';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { format } from 'date-fns';
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState('2025-10-18');
@@ -111,7 +112,15 @@ export default function Home() {
             </Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>✨ Features</Text>
+            <View style={styles.infoHeader}>
+              <Text style={styles.infoTitle}>✨ Features</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedDate(format(new Date(), 'yyyy-MM-dd'));
+                }}>
+                <Text style={styles.todayButtonText}>today</Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.featureList}>
               <Text style={styles.featureItem}>• Horizontal scrollable weekly calendar</Text>
               <Text style={styles.featureItem}>• Today&apos;s date highlighting</Text>
@@ -226,11 +235,21 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  infoHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   infoTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: 'white',
     marginBottom: 12,
+  },
+  todayButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748b',
   },
   featureList: {
     gap: 8,
