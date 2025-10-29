@@ -19,6 +19,7 @@ export default function Home() {
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
             markedDates={['2025-10-15', '2025-10-18']}
+            dayWidth={37}
             containerHeight={77}>
             <StripCalendar.Week
               columnGap={8}

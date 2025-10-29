@@ -48,9 +48,15 @@ export function useHorizontalCalendar({
   }, [dateRange, firstDay, minDate, maxDate]);
 
   const initialScrollIndex = useMemo(() => {
-    const targetDate = externalSelectedDate
-      ? new Date(externalSelectedDate)
-      : new Date();
+    let targetDate: Date;
+
+    if (externalSelectedDate) {
+      targetDate = new Date(externalSelectedDate);
+    } else if (startDate) {
+      targetDate = startDate;
+    } else {
+      targetDate = new Date();
+    }
 
     const targetWeekStart = startOfWeek(targetDate, {
       weekStartsOn: firstDay,
@@ -59,8 +65,8 @@ export function useHorizontalCalendar({
 
     const index = weeksData.findIndex((week) => week.id === targetWeekId);
 
-    return index >= 0 ? index : Math.floor(weeksData.length / 2);
-  }, [weeksData, firstDay, externalSelectedDate]);
+    return index >= 0 ? index : 0;
+  }, [weeksData, firstDay, externalSelectedDate, startDate]);
 
   const [currentScrollIndex, setCurrentScrollIndex] =
     useState(initialScrollIndex);
@@ -81,7 +87,7 @@ export function useHorizontalCalendar({
         setCurrentScrollIndex(weekIndex);
       }
     },
-    [onDateChange, weeksData, firstDay, currentScrollIndex],
+    [onDateChange, weeksData, firstDay],
   );
 
   const canGoNext = useMemo(() => {
