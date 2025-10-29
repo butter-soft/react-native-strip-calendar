@@ -144,6 +144,7 @@ StripCalendar.Week = function ({
   columnGap?: number;
   containerHeight?: number;
 }) {
+  const isInitialMount = useRef(true);
   const listRef = useRef<LegendListRef>(null);
 
   const {
@@ -166,6 +167,11 @@ StripCalendar.Week = function ({
   }, []);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     moveToIndex(currentScrollIndex);
   }, [moveToIndex, currentScrollIndex, selectedDate]);
 
@@ -186,21 +192,12 @@ StripCalendar.Week = function ({
         showsHorizontalScrollIndicator={false}
         className={className.container}
         style={[defaultStyles.listContainer, style.container]}
-        estimatedItemSize={dayWidth * 7 + (columnGap ?? 12) * 6}
         getEstimatedItemSize={() => dayWidth * 7 + (columnGap ?? 12) * 6}
         contentContainerStyle={[defaultStyles.listContent, style.content]}
         initialScrollIndex={initialScrollIndex}
-        maintainVisibleContentPosition
         ItemSeparatorComponent={() => (
           <View style={{ width: columnGap ?? 12 }} />
         )}
-        onLayout={() => {
-          if (Platform.OS === 'android') {
-            setTimeout(() => {
-              moveToIndex(initialScrollIndex);
-            }, 500);
-          }
-        }}
       />
     </View>
   );
