@@ -21,9 +21,13 @@ export function useHorizontalCalendar({
   selectedDate: externalSelectedDate,
   onDateChange,
 }: UseHorizontalCalendarOptions = {}) {
-  const [selectedDate, setSelectedDate] = useState<string>(
+  const [internalDate, setInternalDate] = useState<string>(
     externalSelectedDate || format(new Date(), 'yyyy-MM-dd'),
   );
+
+  const isControlled = !!externalSelectedDate;
+
+  const selectedDate = isControlled ? externalSelectedDate : internalDate;
 
   const dateRange = useMemo(() => {
     if (startDate && endDate) {
@@ -71,9 +75,22 @@ export function useHorizontalCalendar({
   const [currentScrollIndex, setCurrentScrollIndex] =
     useState(initialScrollIndex);
 
+  const handleDateChange = useCallback(
+    (newDate: string) => {
+      if (!isControlled) {
+        setInternalDate(newDate);
+      }
+
+      if (onDateChange) {
+        onDateChange(newDate);
+      }
+    },
+    [isControlled, onDateChange],
+  );
+
   const handleDateSelect = useCallback(
     (date: string) => {
-      setSelectedDate(date);
+      handleDateChange(date);
       onDateChange?.(date);
 
       const selectedDateObj = new Date(date);
@@ -113,7 +130,7 @@ export function useHorizontalCalendar({
   const goToToday = useCallback(() => {
     const today = new Date();
 
-    setSelectedDate(format(today, 'yyyy-MM-dd'));
+    handleDateChange(format(today, 'yyyy-MM-dd'));
 
     const targetWeekStart = startOfWeek(today, { weekStartsOn: firstDay });
     const targetWeekId = `week-${format(targetWeekStart, 'yyyy-MM-dd')}`;
