@@ -1,4 +1,5 @@
 import { generateWeeksInRange } from '../lib/generate-dates';
+import isParsableDateString from '../lib/is-parsable-date-string';
 import { type Day, format, startOfWeek, subMonths, addMonths } from 'date-fns';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -157,6 +158,10 @@ export function useHorizontalCalendar({
   );
 
   useEffect(() => {
+    if (!isParsableDateString(externalSelectedDate || '')) {
+      return;
+    }
+
     if (isControlled && externalSelectedDate) {
       setCurrentScrollIndex(initialScrollIndex);
     }
