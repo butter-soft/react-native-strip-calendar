@@ -1,6 +1,6 @@
 {
   "name": "react-native-strip-calendar",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "react native strip calendar",
   "type": "module",
   "main": "dist/index.js",
@@ -20,10 +20,14 @@
   },
   "scripts": {
     "build": "tsdown",
+    "build:watch": "tsdown --watch ./src",
     "example:install": "cd example && pnpm install && cd ..",
     "example:prebuild": "cd example && pnpm prebuild && cd ..",
+    "example:reset": "cd example && pnpm reset && cd ..",
     "example:android": "cd example && pnpm android && cd ..",
-    "example:ios": "cd example && pnpm ios && cd .."
+    "example:android-device": "cd example && pnpm android:device && cd ..",
+    "example:ios": "cd example && pnpm ios && cd ..",
+    "example:ios-device": "cd example && pnpm ios:device && cd .."
   },
   "files": [
     "dist"
@@ -36,7 +40,7 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/react": "^19.0.0",
     "prettier": "^3.6.2",
-    "tsdown": "^0.15.6",
+    "tsdown": "^0.15.9",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
@@ -45,7 +49,7 @@
     "react-native-web": "^0.20.0"
   },
   "dependencies": {
-    "@legendapp/list": "^2.0.9",
+    "@legendapp/list": "^2.0.14",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "tailwind-merge": "^3.3.1"

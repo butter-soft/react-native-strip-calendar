@@ -3,6 +3,7 @@ import type { Locale } from 'date-fns';
 import { createContext, useContext } from 'react';
 
 export interface StripCalendarContextValue {
+  dayWidth: number;
   weeksData: WeekData[];
   selectedDate: string;
   onDateSelect: (date: string) => void;
@@ -14,6 +15,7 @@ export interface StripCalendarContextValue {
   canGoPrevious: boolean;
   goToNextWeek: () => void;
   goToPreviousWeek: () => void;
+  goToToday: () => void;
 }
 
 const StripCalendarContext = createContext<StripCalendarContextValue | null>(
