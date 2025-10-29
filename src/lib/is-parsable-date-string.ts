@@ -1,7 +1,7 @@
-import { isValid } from 'date-fns';
+import { isValid, parse } from 'date-fns';
 
 export default function isParsableDateString(dateString: string) {
-  const parsedDate = new Date(dateString);
+  const parsedDate = parse(dateString, 'yyyy-MM-dd', new Date());
 
   return isValid(parsedDate);
 }

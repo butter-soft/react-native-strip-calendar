@@ -162,7 +162,7 @@ export function useHorizontalCalendar({
       return;
     }
 
-    if (isControlled && externalSelectedDate) {
+    if (isControlled) {
       setCurrentScrollIndex(initialScrollIndex);
     }
   }, [isControlled, externalSelectedDate, initialScrollIndex]);
