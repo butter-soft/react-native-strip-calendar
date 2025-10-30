@@ -128,7 +128,6 @@ StripCalendar.Week = function ({
     week: {},
   },
   columnGap,
-  containerHeight,
   dayProps: weekDayProps,
 }: {
   className?: {
@@ -142,7 +141,6 @@ StripCalendar.Week = function ({
   };
   dayProps?: Omit<DayProps, 'date'>;
   columnGap?: number;
-  containerHeight?: number;
 }) {
   const isInitialMount = useRef(true);
   const listRef = useRef<LegendListRef>(null);
@@ -176,7 +174,7 @@ StripCalendar.Week = function ({
   }, [moveToIndex, currentScrollIndex, selectedDate]);
 
   return (
-    <View style={{ flex: 1, height: containerHeight ?? 100 }}>
+    <View style={{ flex: 1 }}>
       <LegendList
         ref={listRef}
         data={weeksData}
