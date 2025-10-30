@@ -24,7 +24,6 @@ export default function Home() {
             containerHeight={77}>
             <StripCalendar.Week
               columnGap={8}
-              containerHeight={80}
               style={{
                 week: {
                   width: 'auto',
