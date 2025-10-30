@@ -91,7 +91,7 @@ export function StripCalendar({
     <StripCalendarContext.Provider value={contextValue}>
       <View
         className={classNames}
-        style={[{ height: containerHeight }, styles]}
+        style={[{ height: containerHeight, width: '100%' }, styles]}
       >
         {children}
       </View>
@@ -176,7 +176,7 @@ StripCalendar.Week = function ({
   }, [moveToIndex, currentScrollIndex, selectedDate]);
 
   return (
-    <View style={{ width: '100%', height: containerHeight ?? 100 }}>
+    <View style={{ flex: 1, height: containerHeight ?? 100 }}>
       <LegendList
         ref={listRef}
         data={weeksData}
@@ -195,7 +195,6 @@ StripCalendar.Week = function ({
         getEstimatedItemSize={() => dayWidth * 7 + (columnGap ?? 12) * 6}
         contentContainerStyle={[defaultStyles.listContent, style.content]}
         initialScrollIndex={initialScrollIndex}
-        maintainVisibleContentPosition={false}
         ItemSeparatorComponent={() => (
           <View style={{ width: columnGap ?? 12 }} />
         )}
