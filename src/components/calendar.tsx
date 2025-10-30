@@ -174,7 +174,7 @@ StripCalendar.Week = function ({
   }, [moveToIndex, currentScrollIndex, selectedDate]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={defaultStyles.weekContainer}>
       <LegendList
         ref={listRef}
         data={weeksData}
@@ -274,6 +274,9 @@ const defaultStyles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  weekContainer: {
+    flex: 1,
   },
   listContainer: {
     height: 70,
