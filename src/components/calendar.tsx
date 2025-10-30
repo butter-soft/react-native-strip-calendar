@@ -195,6 +195,7 @@ StripCalendar.Week = function ({
         getEstimatedItemSize={() => dayWidth * 7 + (columnGap ?? 12) * 6}
         contentContainerStyle={[defaultStyles.listContent, style.content]}
         initialScrollIndex={initialScrollIndex}
+        maintainVisibleContentPosition={false}
         ItemSeparatorComponent={() => (
           <View style={{ width: columnGap ?? 12 }} />
         )}
