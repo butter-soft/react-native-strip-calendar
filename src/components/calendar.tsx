@@ -32,6 +32,10 @@ export interface StripCalendarProps {
   children?: ReactNode;
 }
 
+const DEFAULT_CONTAINER_HEIGHT = 60;
+const DEFAULT_DAY_WIDTH = 48;
+const DEFAULT_COLUMN_GAP = 12;
+
 export function StripCalendar({
   firstDay = 1,
   startDate,
@@ -40,8 +44,8 @@ export function StripCalendar({
   maxDate,
   onDateChange,
   selectedDate: externalSelectedDate,
-  containerHeight = 60,
-  dayWidth = 48,
+  containerHeight = DEFAULT_CONTAINER_HEIGHT,
+  dayWidth = DEFAULT_DAY_WIDTH,
   locale = enUS,
   markedDates,
   classNames,
@@ -158,10 +162,10 @@ StripCalendar.Week = function ({
     currentScrollIndex,
   } = useStripCalendarContext();
 
-  const finalHeight = weekHeight ?? containerHeight ?? 60;
+  const finalHeight = weekHeight ?? containerHeight;
 
   const weekWidth = useMemo(() => {
-    return dayWidth * 7 + (columnGap ?? 12) * 6;
+    return dayWidth * 7 + (columnGap ?? DEFAULT_COLUMN_GAP) * 6;
   }, [dayWidth, columnGap]);
 
   const moveToIndex = useCallback(
@@ -188,10 +192,6 @@ StripCalendar.Week = function ({
     });
   }, []);
 
-  const effectiveInitialScrollIndex = isLayoutReady
-    ? initialScrollIndex
-    : undefined;
-
   useEffect(() => {
     if (isLayoutReady) {
       moveToIndex(currentScrollIndex);
@@ -201,7 +201,6 @@ StripCalendar.Week = function ({
   return (
     <View style={{ height: finalHeight }}>
       <LegendList
-        key={isLayoutReady ? 'ready' : 'not-ready'}
         ref={listRef}
         data={weeksData}
         keyExtractor={(item) => item.id}
@@ -221,10 +220,8 @@ StripCalendar.Week = function ({
         style={[style.container, { height: '100%' }]}
         getFixedItemSize={() => weekWidth}
         contentContainerStyle={[style.content, { height: '100%' }]}
-        initialScrollIndex={effectiveInitialScrollIndex}
-        ItemSeparatorComponent={() => (
-          <View style={{ width: columnGap ?? 12 }} />
-        )}
+        initialScrollIndex={initialScrollIndex}
+        ItemSeparatorComponent={() => <View style={{ width: columnGap }} />}
         nestedScrollEnabled
         onLayout={handleContainerLayout}
       />
