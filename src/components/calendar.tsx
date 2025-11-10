@@ -145,15 +145,14 @@ StripCalendar.Week = function ({
   dayProps?: Omit<DayProps, 'date'>;
   columnGap?: number;
 }) {
-  const isInitialMount = useRef(true);
   const listRef = useRef<LegendListRef>(null);
 
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [isInitialMove, setIsInitialMove] = useState(false);
 
   const {
     dayWidth,
     containerHeight,
-    selectedDate,
     weeksData,
     initialScrollIndex,
     currentScrollIndex,
@@ -167,16 +166,16 @@ StripCalendar.Week = function ({
 
   const moveToIndex = useCallback(
     (currentScrollIndex: number) => {
-      if (!isLayoutReady) {
-        return;
-      }
-
       requestAnimationFrame(() => {
         if (currentScrollIndex >= 0) {
           listRef.current?.scrollToIndex?.({
             index: currentScrollIndex,
-            animated: true,
+            animated: isInitialMove ? false : true,
           });
+
+          if (!isInitialMove) {
+            setIsInitialMove(true);
+          }
         }
       });
     },
@@ -194,13 +193,10 @@ StripCalendar.Week = function ({
     : undefined;
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+    if (isLayoutReady) {
+      moveToIndex(currentScrollIndex);
     }
-
-    moveToIndex(currentScrollIndex);
-  }, [moveToIndex, currentScrollIndex, selectedDate]);
+  }, [isLayoutReady, currentScrollIndex, moveToIndex]);
 
   return (
     <View style={{ height: finalHeight }}>
