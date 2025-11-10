@@ -5,15 +5,15 @@ import { Week } from './week';
 import { LegendList, type LegendListRef } from '@legendapp/list';
 import { type Day as DateFnsDay, type Locale } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { useRef, type ReactNode, useEffect, useCallback } from 'react';
 import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+  useRef,
+  type ReactNode,
+  useEffect,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
+import { Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 
 export interface StripCalendarProps {
   firstDay?: DateFnsDay;
@@ -73,6 +73,7 @@ export function StripCalendar({
 
   const contextValue = {
     dayWidth,
+    containerHeight,
     weeksData,
     selectedDate: currentSelectedDate,
     onDateSelect: handleDateSelect,
@@ -128,6 +129,7 @@ StripCalendar.Week = function ({
     week: {},
   },
   columnGap,
+  weekHeight,
   dayProps: weekDayProps,
 }: {
   className?: {
@@ -139,30 +141,57 @@ StripCalendar.Week = function ({
     content?: StyleProp<ViewStyle>;
     week?: StyleProp<ViewStyle>;
   };
+  weekHeight?: number;
   dayProps?: Omit<DayProps, 'date'>;
   columnGap?: number;
 }) {
   const isInitialMount = useRef(true);
   const listRef = useRef<LegendListRef>(null);
 
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
+
   const {
     dayWidth,
+    containerHeight,
     selectedDate,
     weeksData,
     initialScrollIndex,
     currentScrollIndex,
   } = useStripCalendarContext();
 
-  const moveToIndex = useCallback((currentScrollIndex: number) => {
-    requestAnimationFrame(() => {
-      if (currentScrollIndex >= 0) {
-        listRef.current?.scrollToIndex?.({
-          index: currentScrollIndex,
-          animated: true,
-        });
+  const finalHeight = weekHeight ?? containerHeight ?? 60;
+
+  const weekWidth = useMemo(() => {
+    return dayWidth * 7 + (columnGap ?? 12) * 6;
+  }, [dayWidth, columnGap]);
+
+  const moveToIndex = useCallback(
+    (currentScrollIndex: number) => {
+      if (!isLayoutReady) {
+        return;
       }
+
+      requestAnimationFrame(() => {
+        if (currentScrollIndex >= 0) {
+          listRef.current?.scrollToIndex?.({
+            index: currentScrollIndex,
+            animated: true,
+          });
+        }
+      });
+    },
+    [isLayoutReady],
+  );
+
+  const handleContainerLayout = useCallback(() => {
+    requestAnimationFrame(() => {
+      setIsLayoutReady(true);
     });
   }, []);
+
+  const effectiveInitialScrollIndex = isLayoutReady
+    ? initialScrollIndex
+    : undefined;
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -174,13 +203,17 @@ StripCalendar.Week = function ({
   }, [moveToIndex, currentScrollIndex, selectedDate]);
 
   return (
-    <View style={defaultStyles.weekContainer}>
+    <View style={{ height: finalHeight }}>
       <LegendList
+        key={isLayoutReady ? 'ready' : 'not-ready'}
         ref={listRef}
         data={weeksData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Week className={className.week} style={style.week}>
+          <Week
+            className={className.week}
+            style={[style.week, { width: weekWidth, height: finalHeight }]}
+          >
             {item.dates.map((date) => (
               <Day key={date.id} date={date} {...weekDayProps} />
             ))}
@@ -189,13 +222,15 @@ StripCalendar.Week = function ({
         horizontal
         showsHorizontalScrollIndicator={false}
         className={className.container}
-        style={[defaultStyles.listContainer, style.container]}
-        getEstimatedItemSize={() => dayWidth * 7 + (columnGap ?? 12) * 6}
-        contentContainerStyle={[defaultStyles.listContent, style.content]}
-        initialScrollIndex={initialScrollIndex}
+        style={[style.container, { height: finalHeight }]}
+        getFixedItemSize={() => weekWidth}
+        contentContainerStyle={[style.content, { height: finalHeight }]}
+        initialScrollIndex={effectiveInitialScrollIndex}
         ItemSeparatorComponent={() => (
           <View style={{ width: columnGap ?? 12 }} />
         )}
+        nestedScrollEnabled
+        onLayout={handleContainerLayout}
       />
     </View>
   );
@@ -268,20 +303,3 @@ StripCalendar.TodayButton = function ({
     </Pressable>
   );
 };
-
-const defaultStyles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  weekContainer: {
-    flex: 1,
-  },
-  listContainer: {
-    height: 70,
-  },
-  listContent: {
-    height: '100%',
-  },
-});
