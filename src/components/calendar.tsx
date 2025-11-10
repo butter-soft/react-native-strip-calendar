@@ -132,7 +132,7 @@ StripCalendar.Week = function ({
     content: {},
     week: {},
   },
-  columnGap,
+  columnGap = DEFAULT_COLUMN_GAP,
   weekHeight,
   dayProps: weekDayProps,
 }: {
