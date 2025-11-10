@@ -165,7 +165,7 @@ StripCalendar.Week = function ({
   const finalHeight = weekHeight ?? containerHeight;
 
   const weekWidth = useMemo(() => {
-    return dayWidth * 7 + (columnGap ?? DEFAULT_COLUMN_GAP) * 6;
+    return dayWidth * 7 + columnGap * 6;
   }, [dayWidth, columnGap]);
 
   const moveToIndex = useCallback(
@@ -218,10 +218,12 @@ StripCalendar.Week = function ({
         showsHorizontalScrollIndicator={false}
         className={className.container}
         style={[style.container, { height: '100%' }]}
-        getFixedItemSize={() => weekWidth}
+        getEstimatedItemSize={() => weekWidth}
         contentContainerStyle={[style.content, { height: '100%' }]}
         initialScrollIndex={initialScrollIndex}
-        ItemSeparatorComponent={() => <View style={{ width: columnGap }} />}
+        ItemSeparatorComponent={() => (
+          <View style={{ width: columnGap, height: '100%' }} />
+        )}
         nestedScrollEnabled
         onLayout={handleContainerLayout}
       />

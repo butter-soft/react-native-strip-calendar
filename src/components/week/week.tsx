@@ -22,5 +22,6 @@ export function Week({ className, style, children }: WeekProps) {
 const defaultStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    width: 'auto',
   },
 });
