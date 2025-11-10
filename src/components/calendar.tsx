@@ -212,7 +212,7 @@ StripCalendar.Week = function ({
         renderItem={({ item }) => (
           <Week
             className={className.week}
-            style={[style.week, { width: weekWidth, height: finalHeight }]}
+            style={[style.week, { width: weekWidth, height: '100%' }]}
           >
             {item.dates.map((date) => (
               <Day key={date.id} date={date} {...weekDayProps} />
@@ -222,9 +222,9 @@ StripCalendar.Week = function ({
         horizontal
         showsHorizontalScrollIndicator={false}
         className={className.container}
-        style={[style.container, { height: finalHeight }]}
+        style={[style.container, { height: '100%' }]}
         getFixedItemSize={() => weekWidth}
-        contentContainerStyle={[style.content, { height: finalHeight }]}
+        contentContainerStyle={[style.content, { height: '100%' }]}
         initialScrollIndex={effectiveInitialScrollIndex}
         ItemSeparatorComponent={() => (
           <View style={{ width: columnGap ?? 12 }} />
