@@ -5,15 +5,15 @@ import { Week } from './week';
 import { LegendList, type LegendListRef } from '@legendapp/list';
 import { type Day as DateFnsDay, type Locale } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-import { useRef, type ReactNode, useEffect, useCallback } from 'react';
 import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+  useRef,
+  type ReactNode,
+  useEffect,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
+import { Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 
 export interface StripCalendarProps {
   firstDay?: DateFnsDay;
@@ -32,6 +32,10 @@ export interface StripCalendarProps {
   children?: ReactNode;
 }
 
+const DEFAULT_CONTAINER_HEIGHT = 60;
+const DEFAULT_DAY_WIDTH = 48;
+const DEFAULT_COLUMN_GAP = 12;
+
 export function StripCalendar({
   firstDay = 1,
   startDate,
@@ -40,8 +44,8 @@ export function StripCalendar({
   maxDate,
   onDateChange,
   selectedDate: externalSelectedDate,
-  containerHeight = 60,
-  dayWidth = 48,
+  containerHeight = DEFAULT_CONTAINER_HEIGHT,
+  dayWidth = DEFAULT_DAY_WIDTH,
   locale = enUS,
   markedDates,
   classNames,
@@ -73,6 +77,7 @@ export function StripCalendar({
 
   const contextValue = {
     dayWidth,
+    containerHeight,
     weeksData,
     selectedDate: currentSelectedDate,
     onDateSelect: handleDateSelect,
@@ -128,6 +133,7 @@ StripCalendar.Week = function ({
     week: {},
   },
   columnGap,
+  weekHeight,
   dayProps: weekDayProps,
 }: {
   className?: {
@@ -139,48 +145,70 @@ StripCalendar.Week = function ({
     content?: StyleProp<ViewStyle>;
     week?: StyleProp<ViewStyle>;
   };
+  weekHeight?: number;
   dayProps?: Omit<DayProps, 'date'>;
   columnGap?: number;
 }) {
-  const isInitialMount = useRef(true);
   const listRef = useRef<LegendListRef>(null);
+
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [isInitialMove, setIsInitialMove] = useState(false);
 
   const {
     dayWidth,
-    selectedDate,
+    containerHeight,
     weeksData,
     initialScrollIndex,
     currentScrollIndex,
   } = useStripCalendarContext();
 
-  const moveToIndex = useCallback((currentScrollIndex: number) => {
+  const finalHeight = weekHeight ?? containerHeight;
+
+  const weekWidth = useMemo(() => {
+    return dayWidth * 7 + (columnGap ?? DEFAULT_COLUMN_GAP) * 6;
+  }, [dayWidth, columnGap]);
+
+  const moveToIndex = useCallback(
+    (currentScrollIndex: number) => {
+      requestAnimationFrame(() => {
+        if (currentScrollIndex >= 0) {
+          listRef.current?.scrollToIndex?.({
+            index: currentScrollIndex,
+            animated: isInitialMove ? false : true,
+          });
+
+          if (!isInitialMove) {
+            setIsInitialMove(true);
+          }
+        }
+      });
+    },
+    [isLayoutReady],
+  );
+
+  const handleContainerLayout = useCallback(() => {
     requestAnimationFrame(() => {
-      if (currentScrollIndex >= 0) {
-        listRef.current?.scrollToIndex?.({
-          index: currentScrollIndex,
-          animated: true,
-        });
-      }
+      setIsLayoutReady(true);
     });
   }, []);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+    if (isLayoutReady) {
+      moveToIndex(currentScrollIndex);
     }
-
-    moveToIndex(currentScrollIndex);
-  }, [moveToIndex, currentScrollIndex, selectedDate]);
+  }, [isLayoutReady, currentScrollIndex, moveToIndex]);
 
   return (
-    <View style={defaultStyles.weekContainer}>
+    <View style={{ height: finalHeight }}>
       <LegendList
         ref={listRef}
         data={weeksData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Week className={className.week} style={style.week}>
+          <Week
+            className={className.week}
+            style={[style.week, { width: weekWidth, height: '100%' }]}
+          >
             {item.dates.map((date) => (
               <Day key={date.id} date={date} {...weekDayProps} />
             ))}
@@ -189,13 +217,13 @@ StripCalendar.Week = function ({
         horizontal
         showsHorizontalScrollIndicator={false}
         className={className.container}
-        style={[defaultStyles.listContainer, style.container]}
-        getEstimatedItemSize={() => dayWidth * 7 + (columnGap ?? 12) * 6}
-        contentContainerStyle={[defaultStyles.listContent, style.content]}
+        style={[style.container, { height: '100%' }]}
+        getFixedItemSize={() => weekWidth}
+        contentContainerStyle={[style.content, { height: '100%' }]}
         initialScrollIndex={initialScrollIndex}
-        ItemSeparatorComponent={() => (
-          <View style={{ width: columnGap ?? 12 }} />
-        )}
+        ItemSeparatorComponent={() => <View style={{ width: columnGap }} />}
+        nestedScrollEnabled
+        onLayout={handleContainerLayout}
       />
     </View>
   );
@@ -268,20 +296,3 @@ StripCalendar.TodayButton = function ({
     </Pressable>
   );
 };
-
-const defaultStyles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  weekContainer: {
-    flex: 1,
-  },
-  listContainer: {
-    height: 70,
-  },
-  listContent: {
-    height: '100%',
-  },
-});

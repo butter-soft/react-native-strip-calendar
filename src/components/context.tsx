@@ -4,6 +4,7 @@ import { createContext, useContext } from 'react';
 
 export interface StripCalendarContextValue {
   dayWidth: number;
+  containerHeight: number;
   weeksData: WeekData[];
   selectedDate: string;
   onDateSelect: (date: string) => void;

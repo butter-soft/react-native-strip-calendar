@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
 import { StripCalendar } from 'react-native-strip-calendar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: 'black' }}>
-      <View style={{ flex: 1, backgroundColor: 'black' }}>
+      <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: 'black' }}>
         <View style={styles.container}>
           <Text style={styles.title}>📅 Strip Calendar Example</Text>
           <StripCalendar
@@ -129,7 +129,7 @@ export default function Home() {
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
