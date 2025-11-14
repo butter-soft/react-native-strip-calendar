@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![화면 기록 2025-10-04 오후 2 52 31](https://github.com/user-attachments/assets/6043bdb5-9554-4cba-8b9e-9b44405355d8)
+![화면 기록 2025-10-04 오후 2 52 31](https://github.com/user-attachments/assets/6043bdb5-9554-4cba-8b9e-9b44405355d8)
 
 </div>
 
@@ -51,7 +51,7 @@ export default function MyComponent() {
     <StripCalendar
       startDate={new Date('2025-01-01')}
       endDate={new Date('2025-12-31')}
-      initialDate={new Date()}
+      selectedDate={format(new Date(), 'yyyy-MM-dd')}
       onDateChange={(date) => console.log('Selected date:', date)}
     >
       <StripCalendar.Header>
@@ -75,12 +75,11 @@ export default function MyComponent() {
 <StripCalendar
   startDate={new Date('2025-01-01')}
   endDate={new Date('2025-12-31')}
-  initialDate={new Date()}
   selectedDate={selectedDate}
   onDateChange={setSelectedDate}
   markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
   containerHeight={120}
-  itemWidth={48}
+  dayWidth={48}
 >
   <StripCalendar.Header>
     {(dateString) => (
@@ -163,12 +162,11 @@ export default function MyComponent() {
 <StripCalendar
   startDate={new Date('2025-01-01')}
   endDate={new Date('2025-12-31')}
-  initialDate={new Date()}
   selectedDate={selectedDate}
   onDateChange={setSelectedDate}
   markedDates={['2025-01-15', '2025-02-14', '2025-03-08']}
   containerHeight={120}
-  itemWidth={48}
+  dayWidth={48}
 >
   <StripCalendar.Header>
     {(dateString) => (
@@ -179,30 +177,18 @@ export default function MyComponent() {
   </StripCalendar.Header>
   <StripCalendar.Week
     columnGap={16}
-    renderDay={({
-      date,
-      isSelected,
-      isDisabled,
-      isMarked,
-      dayName,
-      dayNumber,
-      onPress,
-    }) => (
-      <Pressable
-        style={[
-          styles.customDay,
-          isSelected && styles.selectedDay,
-          isMarked && styles.markedDay,
-          isDisabled && styles.disabledDay,
-        ]}
-        onPress={onPress}
-        disabled={isDisabled}
-      >
-        <Text style={styles.dayName}>{dayName}</Text>
-        <Text style={styles.dayNumber}>{dayNumber}</Text>
-        {isMarked && <View style={styles.indicator} />}
-      </Pressable>
-    )}
+    dayProps={{
+      renderDay: ({ date, isMarked, dayName, dayNumber, onPress }) => (
+        <Pressable
+          style={[styles.customDay, isMarked && styles.markedDay]}
+          onPress={onPress}
+        >
+          <Text style={styles.dayName}>{dayName}</Text>
+          <Text style={styles.dayNumber}>{dayNumber}</Text>
+          {isMarked && <View style={styles.indicator} />}
+        </Pressable>
+      ),
+    }}
   />
   <StripCalendar.PreviousButton>
     {({ disabled }) => (
@@ -231,35 +217,33 @@ export default function MyComponent() {
 
 ### StripCalendarProps
 
-| Prop              | Type                     | Default      | Description                                    |
-| ----------------- | ------------------------ | ------------ | ---------------------------------------------- |
-| `initialDate`     | `Date`                   | `new Date()` | Initial date to display                        |
-| `firstDay`        | `Day`                    | `1`          | First day of the week (0 = Sunday, 1 = Monday) |
-| `startDate`       | `Date`                   | `undefined`  | Start date of the calendar range               |
-| `endDate`         | `Date`                   | `undefined`  | End date of the calendar range                 |
-| `minDate`         | `Date`                   | `undefined`  | Minimum selectable date                        |
-| `maxDate`         | `Date`                   | `undefined`  | Maximum selectable date                        |
-| `selectedDate`    | `string`                 | `undefined`  | Currently selected date (YYYY-MM-DD format)    |
-| `onDateChange`    | `(date: string) => void` | `undefined`  | Callback when date is selected                 |
-| `containerHeight` | `number`                 | `60`         | Height of the calendar container               |
-| `itemWidth`       | `number`                 | `48`         | Width of each day item                         |
-| `markedDates`     | `string[]`               | `[]`         | Array of dates to mark (YYYY-MM-DD format)     |
-| `classNames`      | `string`                 | `undefined`  | CSS class names for styling (NativeWind)       |
-| `styles`          | `StyleProp<ViewStyle>`   | `undefined`  | StyleSheet styles for styling                  |
-| `locale`          | `Locale`                 | `enUS`       | Locale for date formatting                     |
+| Prop              | Type                     | Default     | Description                                    |
+| ----------------- | ------------------------ | ----------- | ---------------------------------------------- |
+| `firstDay`        | `Day`                    | `1`         | First day of the week (0 = Sunday, 1 = Monday) |
+| `startDate`       | `Date`                   | `undefined` | Start date of the calendar range               |
+| `endDate`         | `Date`                   | `undefined` | End date of the calendar range                 |
+| `minDate`         | `Date`                   | `undefined` | Minimum selectable date                        |
+| `maxDate`         | `Date`                   | `undefined` | Maximum selectable date                        |
+| `selectedDate`    | `string`                 | `undefined` | Currently selected date (YYYY-MM-DD format)    |
+| `onDateChange`    | `(date: string) => void` | `undefined` | Callback when date is selected                 |
+| `containerHeight` | `number`                 | `60`        | Height of the calendar container               |
+| `dayWidth`        | `number`                 | `48`        | Width of each day item                         |
+| `markedDates`     | `string[]`               | `[]`        | Array of dates to mark (YYYY-MM-DD format)     |
+| `classNames`      | `string`                 | `undefined` | CSS class names for styling (NativeWind)       |
+| `styles`          | `StyleProp<ViewStyle>`   | `undefined` | StyleSheet styles for styling                  |
+| `locale`          | `Locale`                 | `enUS`      | Locale for date formatting                     |
 
 ### StripCalendar.Week Props
 
-| Prop              | Type                   | Description                              |
-| ----------------- | ---------------------- | ---------------------------------------- |
-| `dayProps`        | `DayProps`             | Props for the Day component              |
-| `renderDay`       | `(props) => ReactNode` | Custom day renderer function             |
-| `className`       | `object`               | CSS class names for container and week   |
-| `style`           | `object`               | StyleSheet styles for container and week |
-| `columnGap`       | `number`               | Gap between week columns (default: 12)   |
-| `containerHeight` | `number`               | Height of the week container             |
+| Prop         | Type       | Default | Description                                                |
+| ------------ | ---------- | ------- | ---------------------------------------------------------- |
+| `dayProps`   | `DayProps` | -       | Props for the Day component                                |
+| `className`  | `object`   | -       | CSS class names for container and week                     |
+| `style`      | `object`   | -       | StyleSheet styles for container and week                   |
+| `columnGap`  | `number`   | `12`    | Gap between week columns                                   |
+| `weekHeight` | `number`   | -       | Height of the week container (overrides `containerHeight`) |
 
-**Note:** When `renderDay` is provided, `dayProps` are ignored. Use either `dayProps` for styling the default Day component or `renderDay` for completely custom day rendering.
+**Note:** When `renderDay` is provided in `dayProps`, other `dayProps` are ignored. Use either `dayProps` for styling the default Day component or `renderDay` for completely custom day rendering.
 
 ### DayProps
 
@@ -270,6 +254,16 @@ export default function MyComponent() {
 | `styles`       | `DayStateStyles`       | StyleSheet styles for different day states    |
 | `formatString` | `object`               | Custom format strings for day name and number |
 | `renderDay`    | `(props) => ReactNode` | Custom day renderer function                  |
+
+### DayRenderProps
+
+| Prop        | Type           | Description                      |
+| ----------- | -------------- | -------------------------------- |
+| `date`      | `CalendarDate` | The date object to render        |
+| `isMarked`  | `boolean`      | Whether the date is marked       |
+| `dayName`   | `string`       | Formatted day name (e.g., "Mon") |
+| `dayNumber` | `number`       | Day number (1-31)                |
+| `onPress`   | `() => void`   | Callback when day is pressed     |
 
 ## Compound Components
 
@@ -296,6 +290,7 @@ Renders the week view with days. Supports two approaches:
 ```tsx
 <StripCalendar.Week
   columnGap={16}
+  weekHeight={120}
   className={{
     container: 'list-container',
     week: 'week-item',
@@ -327,6 +322,7 @@ Renders the week view with days. Supports two approaches:
 ```tsx
 <StripCalendar.Week
   columnGap={16}
+  weekHeight={120}
   className={{
     container: 'list-container',
     week: 'week-item',
@@ -335,30 +331,18 @@ Renders the week view with days. Supports two approaches:
     container: { padding: 16 },
     week: { marginBottom: 8 },
   }}
-  renderDay={({
-    date,
-    isSelected,
-    isDisabled,
-    isMarked,
-    dayName,
-    dayNumber,
-    onPress,
-  }) => (
-    <Pressable
-      style={[
-        styles.customDay,
-        isSelected && styles.selectedDay,
-        isMarked && styles.markedDay,
-        isDisabled && styles.disabledDay,
-      ]}
-      onPress={onPress}
-      disabled={isDisabled}
-    >
-      <Text style={styles.dayName}>{dayName}</Text>
-      <Text style={styles.dayNumber}>{dayNumber}</Text>
-      {isMarked && <View style={styles.indicator} />}
-    </Pressable>
-  )}
+  dayProps={{
+    renderDay: ({ date, isMarked, dayName, dayNumber, onPress }) => (
+      <Pressable
+        style={[styles.customDay, isMarked && styles.markedDay]}
+        onPress={onPress}
+      >
+        <Text style={styles.dayName}>{dayName}</Text>
+        <Text style={styles.dayNumber}>{dayNumber}</Text>
+        {isMarked && <View style={styles.indicator} />}
+      </Pressable>
+    ),
+  }}
 />
 ```
 
@@ -374,6 +358,46 @@ Renders a single day (useful for custom layouts).
 />
 ```
 
+### StripCalendar.PreviousButton
+
+Renders a button to navigate to the previous week.
+
+```tsx
+<StripCalendar.PreviousButton>
+  {({ disabled }) => (
+    <Pressable disabled={disabled}>
+      <Text>‹</Text>
+    </Pressable>
+  )}
+</StripCalendar.PreviousButton>
+```
+
+### StripCalendar.NextButton
+
+Renders a button to navigate to the next week.
+
+```tsx
+<StripCalendar.NextButton>
+  {({ disabled }) => (
+    <Pressable disabled={disabled}>
+      <Text>›</Text>
+    </Pressable>
+  )}
+</StripCalendar.NextButton>
+```
+
+### StripCalendar.TodayButton
+
+Renders a button to navigate to today's date.
+
+```tsx
+<StripCalendar.TodayButton>
+  <Pressable>
+    <Text>Today</Text>
+  </Pressable>
+</StripCalendar.TodayButton>
+```
+
 ## Styling
 
 ### StyleSheet Approach
@@ -381,7 +405,7 @@ Renders a single day (useful for custom layouts).
 ```tsx
 import { StyleSheet } from 'react-native';
 
-<StripCalendar containerHeight={120} itemWidth={48}>
+<StripCalendar containerHeight={120} dayWidth={48}>
   <StripCalendar.Week
     columnGap={16}
     dayProps={{
@@ -438,7 +462,7 @@ const styles = StyleSheet.create({
 ### NativeWind/ClassName Approach
 
 ```tsx
-<StripCalendar containerHeight={120} itemWidth={48}>
+<StripCalendar containerHeight={120} dayWidth={48}>
   <StripCalendar.Week
     columnGap={16}
     dayProps={{
@@ -467,33 +491,21 @@ const styles = StyleSheet.create({
 ### Custom Day Renderer
 
 ```tsx
-<StripCalendar containerHeight={120} itemWidth={48}>
+<StripCalendar containerHeight={120} dayWidth={48}>
   <StripCalendar.Week
     columnGap={16}
-    renderDay={({
-      date,
-      isSelected,
-      isDisabled,
-      isMarked,
-      dayName,
-      dayNumber,
-      onPress,
-    }) => (
-      <Pressable
-        style={[
-          styles.customDay,
-          isSelected && styles.selectedDay,
-          isMarked && styles.markedDay,
-          isDisabled && styles.disabledDay,
-        ]}
-        onPress={onPress}
-        disabled={isDisabled}
-      >
-        <Text style={styles.dayName}>{dayName}</Text>
-        <Text style={styles.dayNumber}>{dayNumber}</Text>
-        {isMarked && <View style={styles.indicator} />}
-      </Pressable>
-    )}
+    dayProps={{
+      renderDay: ({ date, isMarked, dayName, dayNumber, onPress }) => (
+        <Pressable
+          style={[styles.customDay, isMarked && styles.markedDay]}
+          onPress={onPress}
+        >
+          <Text style={styles.dayName}>{dayName}</Text>
+          <Text style={styles.dayNumber}>{dayNumber}</Text>
+          {isMarked && <View style={styles.indicator} />}
+        </Pressable>
+      ),
+    }}
   />
 </StripCalendar>
 ```
@@ -520,10 +532,12 @@ const {
   goToToday,
   scrollToWeek,
 } = useHorizontalCalendar({
-  initialDate: new Date(),
   firstDay: 1,
   startDate: new Date('2025-01-01'),
   endDate: new Date('2025-12-31'),
+  minDate: new Date('2025-01-01'),
+  maxDate: new Date('2025-12-31'),
+  selectedDate: '2025-10-18',
   onDateChange: (date) => console.log(date),
 });
 ```
