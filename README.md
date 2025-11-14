@@ -243,7 +243,7 @@ export default function MyComponent() {
 | `columnGap`  | `number`   | `12`    | Gap between week columns                                   |
 | `weekHeight` | `number`   | -       | Height of the week container (overrides `containerHeight`) |
 
-**Note:** When `renderDay` is provided in `dayProps`, other `dayProps` are ignored. Use either `dayProps` for styling the default Day component or `renderDay` for completely custom day rendering.
+**Note:** When `renderDay` is provided in `dayProps`, other properties on `dayProps` (like `styles` and `classNames`) are ignored. Use either `dayProps` for styling the default Day component or `renderDay` for completely custom day rendering.
 
 ### DayProps
 
