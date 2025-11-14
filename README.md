@@ -260,6 +260,8 @@ export default function MyComponent() {
 | Prop        | Type           | Description                      |
 | ----------- | -------------- | -------------------------------- |
 | `date`      | `CalendarDate` | The date object to render        |
+| `isSelected`| `boolean`      | Whether the date is selected     |
+| `isDisabled`| `boolean`      | Whether the date is disabled     |
 | `isMarked`  | `boolean`      | Whether the date is marked       |
 | `dayName`   | `string`       | Formatted day name (e.g., "Mon") |
 | `dayNumber` | `number`       | Day number (1-31)                |
