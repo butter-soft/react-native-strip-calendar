@@ -1,6 +1,10 @@
 import { generateWeeksInRange } from '../lib/generate-dates';
 import isParsableDateString from '../lib/is-parsable-date-string';
-import { type Day, format, startOfWeek, subMonths, addMonths } from 'date-fns';
+import type { Day } from 'date-fns';
+import { addMonths } from 'date-fns/addMonths';
+import { format } from 'date-fns/format';
+import { startOfWeek } from 'date-fns/startOfWeek';
+import { subMonths } from 'date-fns/subMonths';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export interface UseHorizontalCalendarOptions {

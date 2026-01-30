@@ -3,8 +3,8 @@ import { StripCalendarContext, useStripCalendarContext } from './context';
 import { Day, type DayProps } from './day';
 import { Week } from './week';
 import { LegendList, type LegendListRef } from '@legendapp/list';
-import { type Day as DateFnsDay, type Locale } from 'date-fns';
-import { enUS } from 'date-fns/locale';
+import type { Day as DateFnsDay, Locale } from 'date-fns';
+import { enUS } from 'date-fns/locale/en-US';
 import {
   useRef,
   type ReactNode,

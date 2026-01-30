@@ -6,7 +6,10 @@ import {
   type DayStateClassNames,
   type DayStateStyles,
 } from './variant';
-import { format, isSameDay, isToday as isTodayFn, parseISO } from 'date-fns';
+import { format } from 'date-fns/format';
+import { isSameDay } from 'date-fns/isSameDay';
+import { isToday as isTodayFn } from 'date-fns/isToday';
+import { parseISO } from 'date-fns/parseISO';
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
