@@ -1,16 +1,13 @@
-import {
-  type Day,
-  type Locale,
-  addDays,
-  addWeeks,
-  endOfWeek,
-  format,
-  isAfter,
-  isBefore,
-  isSameDay,
-  startOfDay,
-  startOfWeek,
-} from 'date-fns';
+import { type Day, type Locale } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
+import { addWeeks } from 'date-fns/addWeeks';
+import { endOfWeek } from 'date-fns/endOfWeek';
+import { format } from 'date-fns/format';
+import { isAfter } from 'date-fns/isAfter';
+import { isBefore } from 'date-fns/isBefore';
+import { isSameDay } from 'date-fns/isSameDay';
+import { startOfDay } from 'date-fns/startOfDay';
+import { startOfWeek } from 'date-fns/startOfWeek';
 
 export interface CalendarDate {
   id: string;
